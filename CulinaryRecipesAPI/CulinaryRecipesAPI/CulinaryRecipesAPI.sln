@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CulinaryRecipesAPI", "CulinaryRecipesAPI.csproj", "{26D089B8-E2AE-4E4B-A741-41923F1CFC3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.Domain", "..\CulinaryRecipes.Domain\CulinaryRecipes.Domain.csproj", "{FD4F6D37-5FE3-4E1D-A87A-AD5704E1A261}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.DataAccess", "..\CulinaryRecipes.DataAccess\CulinaryRecipes.DataAccess.csproj", "{A124D519-0A9C-4DFB-8BCB-10515D3885DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.DataAccess.Abstractions", "..\CulinaryRecipes.DataAccess.Abstractions\CulinaryRecipes.DataAccess.Abstractions.csproj", "{9637E171-479A-4F96-AFF9-D01E455E0C3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.ApplicationServices.Abstractions", "..\CulinaryRecipes.ApplicationServices.Abstractions\CulinaryRecipes.ApplicationServices.Abstractions.csproj", "{EB359882-6630-4B05-96F7-2952E68D1530}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.ApplicationServices", "..\CulinaryRecipes.ApplicationServices\CulinaryRecipes.ApplicationServices.csproj", "{A8470684-4057-41A3-B86A-E9AEF4ADB0A7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{26D089B8-E2AE-4E4B-A741-41923F1CFC3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D089B8-E2AE-4E4B-A741-41923F1CFC3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D089B8-E2AE-4E4B-A741-41923F1CFC3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D089B8-E2AE-4E4B-A741-41923F1CFC3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD4F6D37-5FE3-4E1D-A87A-AD5704E1A261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD4F6D37-5FE3-4E1D-A87A-AD5704E1A261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD4F6D37-5FE3-4E1D-A87A-AD5704E1A261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD4F6D37-5FE3-4E1D-A87A-AD5704E1A261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A124D519-0A9C-4DFB-8BCB-10515D3885DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A124D519-0A9C-4DFB-8BCB-10515D3885DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A124D519-0A9C-4DFB-8BCB-10515D3885DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A124D519-0A9C-4DFB-8BCB-10515D3885DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9637E171-479A-4F96-AFF9-D01E455E0C3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9637E171-479A-4F96-AFF9-D01E455E0C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9637E171-479A-4F96-AFF9-D01E455E0C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9637E171-479A-4F96-AFF9-D01E455E0C3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB359882-6630-4B05-96F7-2952E68D1530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB359882-6630-4B05-96F7-2952E68D1530}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB359882-6630-4B05-96F7-2952E68D1530}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB359882-6630-4B05-96F7-2952E68D1530}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8470684-4057-41A3-B86A-E9AEF4ADB0A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8470684-4057-41A3-B86A-E9AEF4ADB0A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8470684-4057-41A3-B86A-E9AEF4ADB0A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8470684-4057-41A3-B86A-E9AEF4ADB0A7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56085085-8F75-4366-B1FB-E4D71FD4D7D2}
+	EndGlobalSection
+EndGlobal
