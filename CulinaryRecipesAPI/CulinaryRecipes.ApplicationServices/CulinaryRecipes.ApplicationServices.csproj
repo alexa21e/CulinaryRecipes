@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CulinaryRecipes.ApplicationServices.Abstractions\CulinaryRecipes.ApplicationServices.Abstractions.csproj" />
+    <ProjectReference Include="..\CulinaryRecipes.DataAccess.Abstractions\CulinaryRecipes.DataAccess.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

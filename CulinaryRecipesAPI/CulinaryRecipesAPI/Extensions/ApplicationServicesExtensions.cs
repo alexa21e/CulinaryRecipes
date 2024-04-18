@@ -2,9 +2,9 @@
 using CulinaryRecipes.ApplicationServices.Abstractions;
 using CulinaryRecipes.DataAccess;
 using CulinaryRecipes.DataAccess.Abstractions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
-using Neo4jClient;
-
+using Neo4j.Driver;
 namespace CulinaryRecipesAPI.Extensions
 {
 	public static class ApplicationServicesExtensions
@@ -12,13 +12,24 @@ namespace CulinaryRecipesAPI.Extensions
 		public static IServiceCollection AddApplicationServices(this IServiceCollection services,
 			IConfiguration config)
 		{
-			services.AddSingleton<IGraphClient>(x =>
-			{
-				var neo4jConfig = config.GetSection("Neo4j");
-				var client = new BoltGraphClient(neo4jConfig["Url"], neo4jConfig["Username"], neo4jConfig["Password"]);
-				client.ConnectAsync().Wait();
-				return client;
-			});
+			/*			services.AddSingleton<IGraphClient>(x =>
+						{
+							var neo4jConfig = config.GetSection("Neo4j");
+							var client = new BoltGraphClient(neo4jConfig["Url"], neo4jConfig["Username"], neo4jConfig["Password"]);
+							client.ConnectAsync().Wait();
+							return client;
+						});*/
+
+
+
+			services.Configure<ApplicationSettings>(config.GetSection("ApplicationSettings"));
+
+			var settings = new ApplicationSettings();
+			config.GetSection("ApplicationSettings").Bind(settings);
+
+			services.AddSingleton(GraphDatabase.Driver(settings.Neo4jConnection, AuthTokens.Basic(settings.Neo4jUser, settings.Neo4jPassword)));
+
+			services.AddScoped<INeo4JDataAccess, Neo4JDataAccess>();
 
 			services.AddCors(options =>
 			{

@@ -1,3 +1,5 @@
+using CulinaryRecipes.ApplicationServices.Abstractions;
+using CulinaryRecipes.DataAccess.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CulinaryRecipesAPI.Controllers
@@ -6,10 +8,18 @@ namespace CulinaryRecipesAPI.Controllers
 	[Route("[controller]")]
 	public class RecipesController : ControllerBase
 	{
-		[HttpGet]
-		public IActionResult GetRecipes()
+		private readonly IRecipeService _recipeService;
+
+		public RecipesController(IRecipeService recipeService)
 		{
-			return Ok("test");
+			_recipeService = recipeService;
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetRecipes(int pageNumber, int pageSize)
+		{
+			var recipes = await _recipeService.GetRecipes(pageNumber, pageSize);
+			return Ok(recipes);
 		}
 	}
 }
