@@ -36,7 +36,7 @@ namespace CulinaryRecipesAPI.Extensions
 				options.AddPolicy(name: "AllowFrontEnd",
 					policy =>
 					{
-						policy.WithOrigins("http://localhost:4200")
+						policy.WithOrigins("https://localhost:4200")
 							.AllowAnyHeader()
 							.AllowAnyMethod();
 					});

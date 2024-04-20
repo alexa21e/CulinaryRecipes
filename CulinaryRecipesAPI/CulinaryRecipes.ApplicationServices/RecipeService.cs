@@ -1,6 +1,6 @@
 ﻿using CulinaryRecipes.ApplicationServices.Abstractions;
 using CulinaryRecipes.DataAccess.Abstractions;
-using CulinaryRecipes.Domain;
+using CulinaryRecipes.Domain.Specifications;
 
 namespace CulinaryRecipes.ApplicationServices
 {
@@ -13,10 +13,15 @@ namespace CulinaryRecipes.ApplicationServices
 			_recipeRepository = recipeRepository;
 		}
 
-		public async Task<List<Dictionary<string, object>>> GetRecipes(int pageNumber, int pageSize)
+		public async Task<List<Dictionary<string, object>>> GetRecipes(RecipeParameters param)
 		{
-			var skip = (pageNumber - 1) * pageSize;
-			return await _recipeRepository.GetRecipes(skip, pageSize);
+			var skip = (param.PageNumber - 1) * param.PageSize;
+			return await _recipeRepository.GetRecipes(skip, param.PageSize);
+		}
+
+		public async Task<int> GetNumberOfRecipes()
+		{
+			return await _recipeRepository.GetNumberOfRecipes();
 		}
 	}
 }

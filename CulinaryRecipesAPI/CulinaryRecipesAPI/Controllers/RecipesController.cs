@@ -1,5 +1,6 @@
 using CulinaryRecipes.ApplicationServices.Abstractions;
-using CulinaryRecipes.DataAccess.Abstractions;
+using CulinaryRecipes.Domain.Specifications;
+using CulinaryRecipesAPI.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CulinaryRecipesAPI.Controllers
@@ -16,10 +17,11 @@ namespace CulinaryRecipesAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetRecipes(int pageNumber, int pageSize)
+		public async Task<ActionResult<Pagination<Dictionary<string, object>>>> GetRecipes([FromQuery]RecipeParameters param)
 		{
-			var recipes = await _recipeService.GetRecipes(pageNumber, pageSize);
-			return Ok(recipes);
+			var recipes = await _recipeService.GetRecipes(param);
+			var noRecipes = await _recipeService.GetNumberOfRecipes();
+			return Ok(new Pagination<Dictionary<string, object>>(param.PageNumber, param.PageSize, noRecipes, recipes));
 		}
 	}
 }

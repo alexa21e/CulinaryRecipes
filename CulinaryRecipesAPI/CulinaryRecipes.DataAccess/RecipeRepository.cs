@@ -1,7 +1,4 @@
-﻿using System.Text;
-using CulinaryRecipes.DataAccess.Abstractions;
-using CulinaryRecipes.Domain;
-using Newtonsoft.Json;
+﻿using CulinaryRecipes.DataAccess.Abstractions;
 
 namespace CulinaryRecipes.DataAccess
 {
@@ -32,6 +29,15 @@ namespace CulinaryRecipes.DataAccess
 			var recipes = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
 
 			return recipes;
+		}
+
+		public async Task<int> GetNumberOfRecipes()
+		{
+			var query = @"MATCH (r:Recipe) RETURN count(r) AS NumberOfRecipes";
+			//var query = @"MATCH (r:Recipe) RETURN count(r) AS numberOfRecipes";
+			var numberOfRecipes = await _neo4JDataAccess.ExecuteReadScalarAsync<int>(query);
+
+			return numberOfRecipes;
 		}
 	}
 }
