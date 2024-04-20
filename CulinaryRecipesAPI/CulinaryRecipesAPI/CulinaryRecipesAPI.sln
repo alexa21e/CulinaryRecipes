@@ -5,15 +5,15 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CulinaryRecipesAPI", "CulinaryRecipesAPI.csproj", "{26D089B8-E2AE-4E4B-A741-41923F1CFC3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.Domain", "..\CulinaryRecipes.Domain\CulinaryRecipes.Domain.csproj", "{FD4F6D37-5FE3-4E1D-A87A-AD5704E1A261}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CulinaryRecipes.Domain", "..\CulinaryRecipes.Domain\CulinaryRecipes.Domain.csproj", "{FD4F6D37-5FE3-4E1D-A87A-AD5704E1A261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.DataAccess", "..\CulinaryRecipes.DataAccess\CulinaryRecipes.DataAccess.csproj", "{A124D519-0A9C-4DFB-8BCB-10515D3885DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CulinaryRecipes.DataAccess", "..\CulinaryRecipes.DataAccess\CulinaryRecipes.DataAccess.csproj", "{A124D519-0A9C-4DFB-8BCB-10515D3885DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.DataAccess.Abstractions", "..\CulinaryRecipes.DataAccess.Abstractions\CulinaryRecipes.DataAccess.Abstractions.csproj", "{9637E171-479A-4F96-AFF9-D01E455E0C3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CulinaryRecipes.DataAccess.Abstractions", "..\CulinaryRecipes.DataAccess.Abstractions\CulinaryRecipes.DataAccess.Abstractions.csproj", "{9637E171-479A-4F96-AFF9-D01E455E0C3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.ApplicationServices.Abstractions", "..\CulinaryRecipes.ApplicationServices.Abstractions\CulinaryRecipes.ApplicationServices.Abstractions.csproj", "{EB359882-6630-4B05-96F7-2952E68D1530}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CulinaryRecipes.ApplicationServices.Abstractions", "..\CulinaryRecipes.ApplicationServices.Abstractions\CulinaryRecipes.ApplicationServices.Abstractions.csproj", "{EB359882-6630-4B05-96F7-2952E68D1530}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CulinaryRecipes.ApplicationServices", "..\CulinaryRecipes.ApplicationServices\CulinaryRecipes.ApplicationServices.csproj", "{A8470684-4057-41A3-B86A-E9AEF4ADB0A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CulinaryRecipes.ApplicationServices", "..\CulinaryRecipes.ApplicationServices\CulinaryRecipes.ApplicationServices.csproj", "{A8470684-4057-41A3-B86A-E9AEF4ADB0A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,7 +4,17 @@ namespace CulinaryRecipes.Domain
 {
 	public class Ingredient
 	{
-		[JsonProperty("name")]
+		
 		public string Name { get; set; }
+
+		private Ingredient() {}
+
+		public static Ingredient Create(string name)
+		{
+			return new Ingredient
+			{
+				Name = name
+			};
+		}
 	}
 }
