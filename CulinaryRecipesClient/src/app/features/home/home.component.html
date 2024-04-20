@@ -1,1 +1,25 @@
-<p>home works!</p>
+<div class="card" *ngIf="recipes">
+    <p-table [value]="recipes" [tableStyle]="{'min-width': '60rem'}"  [paginator]="true" [totalRecords]="count" [rows]="20" [pageLinks]="5" [showPageLinks]="true" [lazy]="true" (onLazyLoad)="onPageChange($event)">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Name</th>
+                <th>Author</th>
+                <th>Number of ingredients</th>
+                <th>Skill level</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-recipe>
+            <tr class="clickable-row" (click)="onRecipeClick(recipe)">
+                <td>{{recipe.Name}}</td>
+                <td>{{recipe.Author}}</td>
+                <td>{{recipe.NumberOfIngredients}}</td>
+                <td>{{recipe.SkillLevel}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                In total there are {{count}} recipes.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
