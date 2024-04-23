@@ -1,7 +1,7 @@
 export interface RecipeHome {
-    Id: number;
-    Name: string;
-    Author: string;
-    NumberOfIngredients: number;
-    SkillLevel: string;
+    id: number;
+    name: string;
+    author: string;
+    numberOfIngredients: number;
+    skillLevel: string;
 }

@@ -15,7 +15,7 @@ namespace CulinaryRecipes.ApplicationServices
 			_recipeRepository = recipeRepository;
 		}
 
-		public async Task<List<Dictionary<string, object>>> GetRecipes(RecipeParameters param)
+		public async Task<List<RecipesToReturn>> GetRecipes(RecipeParameters param)
 		{
 			var skip = (param.PageNumber - 1) * param.PageSize;
 			return await _recipeRepository.GetRecipes(skip, param.PageSize);

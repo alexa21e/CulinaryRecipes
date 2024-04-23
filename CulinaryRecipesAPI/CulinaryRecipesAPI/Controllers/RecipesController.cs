@@ -19,13 +19,13 @@ namespace CulinaryRecipesAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<Pagination<Dictionary<string, object>>>> GetRecipes([FromQuery]RecipeParameters param)
+		public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipes([FromQuery]RecipeParameters param)
 		{
 			var recipes = await _recipeService.GetRecipes(param);
 			var noRecipes = await _recipeService.GetNumberOfRecipes();
-			return Ok(new Pagination<Dictionary<string, object>>(param.PageNumber, param.PageSize, noRecipes, recipes));
+			return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
 		}
-
+		
         [HttpGet("{id}")]
         public async Task<ActionResult<RecipeToReturn>> GetRecipeById(string id)
         {

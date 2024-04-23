@@ -15,7 +15,7 @@ namespace CulinaryRecipes.DataAccess
 			_neo4JDataAccess = neo4jDataAccess;
 		}
 
-		public async Task<List<Dictionary<string, object>>> GetRecipes(int skip, int pageSize)
+		public async Task<List<RecipesToReturn>> GetRecipes(int skip, int pageSize)
 		{
 			var query = @"MATCH(r: Recipe) - [:CONTAINS_INGREDIENT]->(i: Ingredient), (a: Author) - [:WROTE]->(r)
 				RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
@@ -27,9 +27,18 @@ namespace CulinaryRecipes.DataAccess
 				{ "pageSize", pageSize }
 			};
 
-			var recipes = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
+			var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
 
-			return recipes;
+            var recipes = records.Select(record => new RecipesToReturn
+            {
+                Id = record["Id"].As<string>(),
+                Name = record["Name"].As<string>(),
+                Author = record["Author"].As<string>(),
+                NumberOfIngredients = record["NumberOfIngredients"].As<int>(),
+                SkillLevel = record["SkillLevel"].As<string>()
+            }).ToList();
+
+            return recipes;
 		}
 
 		public async Task<int> GetNumberOfRecipes()
