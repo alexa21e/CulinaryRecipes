@@ -27,7 +27,7 @@ namespace CulinaryRecipesAPI.Controllers
 		}
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Recipe>> GetRecipeById(string id)
+        public async Task<ActionResult<RecipeToReturn>> GetRecipeById(string id)
         {
             var recipe = await _recipeService.GetRecipeById(id);
             return Ok(recipe);

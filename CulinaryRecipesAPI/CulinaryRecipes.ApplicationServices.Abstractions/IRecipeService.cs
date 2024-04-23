@@ -8,7 +8,7 @@ namespace CulinaryRecipes.ApplicationServices.Abstractions
 	{
 		Task<List<Dictionary<string, object>>> GetRecipes(RecipeParameters param);
 		Task<int> GetNumberOfRecipes();
-        Task<Recipe> GetRecipeById(string id);
+        Task<RecipeToReturn> GetRecipeById(string id);
 
     }
 }

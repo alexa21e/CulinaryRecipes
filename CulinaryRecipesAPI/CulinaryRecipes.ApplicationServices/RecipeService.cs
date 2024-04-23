@@ -26,7 +26,7 @@ namespace CulinaryRecipes.ApplicationServices
 			return await _recipeRepository.GetNumberOfRecipes();
 		}
 
-        public async Task<Recipe> GetRecipeById(string id)
+        public async Task<RecipeToReturn> GetRecipeById(string id)
         {
             return await _recipeRepository.GetRecipeById(id);
         }

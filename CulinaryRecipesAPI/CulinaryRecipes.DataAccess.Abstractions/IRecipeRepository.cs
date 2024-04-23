@@ -7,7 +7,7 @@ namespace CulinaryRecipes.DataAccess.Abstractions
 	{
 		Task<List<Dictionary<string, object>>> GetRecipes(int skip, int pageSize);
 		Task<int> GetNumberOfRecipes();
-        Task<Recipe> GetRecipeById(string id);
+        Task<RecipeToReturn> GetRecipeById(string id);
 
     }
 }

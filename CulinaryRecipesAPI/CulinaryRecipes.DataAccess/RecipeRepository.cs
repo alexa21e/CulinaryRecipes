@@ -1,4 +1,5 @@
-﻿using CulinaryRecipes.DataAccess.Abstractions;
+﻿using System.Collections;
+using CulinaryRecipes.DataAccess.Abstractions;
 using CulinaryRecipes.DataObjects;
 using CulinaryRecipes.Domain;
 using Neo4j.Driver;
@@ -39,12 +40,11 @@ namespace CulinaryRecipes.DataAccess
 			return numberOfRecipes;
 		}
 
-        public async Task<Recipe> GetRecipeById(string id)
+        public async Task<RecipeToReturn> GetRecipeById(string id)
         {
-            const string query = @"MATCH (r:Recipe {id: $id})
-                           RETURN r.id AS Id, r.name AS Name, r.description AS Description, 
-                                  r.preparationTime AS PreparationTime, r.cookingTime AS CookingTime, 
-                                  r.skillLevel AS SkillLevel";
+            const string query = @"MATCH (r:Recipe {id: $id}) - [:CONTAINS_INGREDIENT]->(i: Ingredient)  
+                                 RETURN r.id AS Id, r.name AS Name, r.description AS Description, r.preparationTime AS PreparationTime, 
+                                        r.cookingTime AS CookingTime, r.skillLevel AS SkillLevel, collect(i) AS Ingredients";
 
             var parameters = new Dictionary<string, object>
             {
@@ -58,53 +58,23 @@ namespace CulinaryRecipes.DataAccess
                 return null;
             }
 
-            var firstRecord = record.First();
+            var ingredientsAsNodes = record[0]["Ingredients"].As<ICollection<INode>>();
 
-            var recipe = Recipe.Create(
-                (string)firstRecord["Id"],
-                    (string)firstRecord["Name"],
-                    (string)firstRecord["Description"],
-                    (int)(long)firstRecord["PreparationTime"],
-                    (int)(long)firstRecord["CookingTime"],
-                    (string)firstRecord["SkillLevel"]);
+            var ingredients = ingredientsAsNodes.Select(node => node.Properties["name"].ToString()).ToList();
+
+            var recipe = new RecipeToReturn()
+            {
+                Recipe = Recipe.Create(
+                    (string)record[0]["Id"],
+                    (string)record[0]["Name"],
+                    (string)record[0]["Description"],
+                    (long)record[0]["PreparationTime"],
+                    (long)record[0]["CookingTime"],
+                    (string)record[0]["SkillLevel"]),
+                Ingredients = ingredients
+            };
 
             return recipe;
         }
-
-        //public async Task<RecipeToReturn> GetRecipeById(int id)
-        //{
-        //    const string query = @"MATCH (r:Recipe {id: $id}) - [:CONTAINS_INGREDIENT]->(i: Ingredient)  
-        //                 RETURN r.id AS Id, r.name AS Name, r.description AS Description, r.preparationTime AS PreparationTime, 
-        //                        r.cookingTime AS CookingTime, r.skillLevel AS SkillLevel, collect(i) AS Ingredients";
-
-        //    var parameters = new Dictionary<string, object>
-        //    {
-        //        { "id", id }
-        //    };
-
-        //    var record = await _neo4JDataAccess.ExecuteReadPropertiesWithNodesAsync(query, parameters);
-
-        //    if (record == null || !record.Any())
-        //    {
-        //        return null;
-        //    }
-
-        //    var firstRecord = record.First();
-
-        //    var recipe = new RecipeToReturn()
-        //    {
-        //        Recipe = Recipe.Create(
-        //            (string)firstRecord["Id"],
-        //            (string)firstRecord["Name"],
-        //            (string)firstRecord["Description"],
-        //            (int)firstRecord["PreparationTime"],
-        //            (int)firstRecord["CookingTime"],
-        //            (string)firstRecord["SkillLevel"]),
-        //        Ingredients = ((List<Dictionary<string, object>>)firstRecord["Ingredients"]).Select(ingredientRecord =>
-        //            Ingredient.Create((string)ingredientRecord["Name"])).ToList()
-        //    };
-
-        //    return recipe;
-        //}
     }
 }
