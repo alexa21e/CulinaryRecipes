@@ -1,10 +1,10 @@
-﻿namespace CulinaryRecipes.DataObjects
+﻿using CulinaryRecipes.Domain;
+
+namespace CulinaryRecipes.DataObjects
 {
 	public class RecipeToReturn
 	{
-		public string Name { get; set; }
-		public string Author { get; set; }
-		public int NumberOfIngredients { get; set; }
-		public string SkillLevel { get; set; }
+		public Recipe Recipe { get; set; }
+		public List<Ingredient> Ingredients { get; set; }
 	}
 }

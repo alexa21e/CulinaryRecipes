@@ -1,5 +1,7 @@
 ﻿using CulinaryRecipes.ApplicationServices.Abstractions;
 using CulinaryRecipes.DataAccess.Abstractions;
+using CulinaryRecipes.DataObjects;
+using CulinaryRecipes.Domain;
 using CulinaryRecipes.Domain.Specifications;
 
 namespace CulinaryRecipes.ApplicationServices
@@ -23,5 +25,10 @@ namespace CulinaryRecipes.ApplicationServices
 		{
 			return await _recipeRepository.GetNumberOfRecipes();
 		}
+
+        public async Task<Recipe> GetRecipeById(string id)
+        {
+            return await _recipeRepository.GetRecipeById(id);
+        }
 	}
 }

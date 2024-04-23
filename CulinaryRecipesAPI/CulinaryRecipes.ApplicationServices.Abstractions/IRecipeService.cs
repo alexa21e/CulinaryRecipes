@@ -1,4 +1,6 @@
-﻿using CulinaryRecipes.Domain.Specifications;
+﻿using CulinaryRecipes.DataObjects;
+using CulinaryRecipes.Domain;
+using CulinaryRecipes.Domain.Specifications;
 
 namespace CulinaryRecipes.ApplicationServices.Abstractions
 {
@@ -6,5 +8,7 @@ namespace CulinaryRecipes.ApplicationServices.Abstractions
 	{
 		Task<List<Dictionary<string, object>>> GetRecipes(RecipeParameters param);
 		Task<int> GetNumberOfRecipes();
-	}
+        Task<Recipe> GetRecipeById(string id);
+
+    }
 }
