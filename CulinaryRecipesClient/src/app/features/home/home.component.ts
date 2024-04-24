@@ -3,6 +3,7 @@ import { RecipesService } from '../../shared/services/recipes.service';
 import { RecipeParams } from '../../shared/models/recipeParams';
 import { RecipeHome } from '../../shared/models/recipeHome';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,7 @@ import { Router } from '@angular/router';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit{
+  private recipesSubscription: Subscription = new Subscription();
   recipes: RecipeHome[] = [];
   params = new RecipeParams();
   count: number = 0;
@@ -20,19 +22,17 @@ export class HomeComponent implements OnInit{
     private router: Router) 
   { }
 
-    ngOnInit(): void {
-      this.getRecipes();
-    }
+  ngOnInit(): void {
+    this.getRecipes();
+  }
 
   getRecipes(){
-    this.recipesService.getRecipes(this.params).subscribe(
+    this.recipesSubscription = this.recipesService.getRecipes(this.params).subscribe(
       {next: (response) => {
         this.recipes = response.data;
-        console.log(this.recipes);
         this.params.pageNumber = response.pageNumber;
         this.params.pageSize = response.pageSize;
         this.count = response.count;
-        console.log(this.count);
       },
       error: error => console.log(error)}
     );
@@ -47,6 +47,10 @@ export class HomeComponent implements OnInit{
   }
 
   onRecipeClick(recipe: RecipeHome) {
-    this.router.navigate(['/recipe', recipe.Name]);
+    this.router.navigate(['/recipe', recipe.id]);
+  }
+
+  ngOnDestroy(): void {
+    this.recipesSubscription.unsubscribe();
   }
 }

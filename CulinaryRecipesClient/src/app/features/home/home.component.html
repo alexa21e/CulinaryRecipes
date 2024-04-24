@@ -10,10 +10,10 @@
         </ng-template>
         <ng-template pTemplate="body" let-recipe>
             <tr class="clickable-row" (click)="onRecipeClick(recipe)">
-                <td>{{recipe.Name}}</td>
-                <td>{{recipe.Author}}</td>
-                <td>{{recipe.NumberOfIngredients}}</td>
-                <td>{{recipe.SkillLevel}}</td>
+                <td>{{recipe.name}}</td>
+                <td>{{recipe.author}}</td>
+                <td>{{recipe.numberOfIngredients}}</td>
+                <td>{{recipe.skillLevel}}</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="summary">

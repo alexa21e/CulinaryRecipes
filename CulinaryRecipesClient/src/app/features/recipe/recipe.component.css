@@ -1,0 +1,12 @@
+.card{
+    margin: 20px;
+}
+
+:host ::ng-deep p-fieldset legend {
+    background-color: #bdd6d1;
+    color: #0B5345;
+}
+
+:host ::ng-deep .p-card{
+    color: #0B5345;
+}

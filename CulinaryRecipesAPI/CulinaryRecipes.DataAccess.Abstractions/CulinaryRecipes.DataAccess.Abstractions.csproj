@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CulinaryRecipes.DataObjects\CulinaryRecipes.DataObjects.csproj" />
     <ProjectReference Include="..\CulinaryRecipes.Domain\CulinaryRecipes.Domain.csproj" />
   </ItemGroup>
 

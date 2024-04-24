@@ -1,1 +1,26 @@
-<p>recipe works!</p>
+<div class="card" *ngIf="recipeDetails">
+    <p-card>
+        <h1>{{recipeDetails.recipe.name}}</h1>
+        <p-divider></p-divider>
+        <p-fieldset legend="Description">
+           {{recipeDetails.recipe.description}}
+        </p-fieldset>
+        <div class="flex flex-wrap" style="max-width: 100%">
+            <div class="flex-1 m-2 border-round">
+                <p-fieldset legend="Ingredients">
+                    <ul>
+                        <li *ngFor="let ingredient of recipeDetails.ingredients">{{ingredient}}</li>
+                    </ul>
+                </p-fieldset>
+            </div>
+            <div class="flex-1 flex flex-column m-2 border-round">
+                <p-fieldset legend="Cooking Time">
+                    {{recipeDetails.recipe.cookingTime/60}} minutes
+                </p-fieldset>
+                <p-fieldset legend="Preparation Time" class="mt-4">
+                    {{recipeDetails.recipe.preparationTime/60}} minutes
+                </p-fieldset>
+            </div>
+        </div>
+    </p-card>
+</div>
