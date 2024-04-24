@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RecipeDetails } from '../../shared/models/recipeDetails';
 import { RecipesService } from '../../shared/services/recipes.service';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-recipe',
@@ -9,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './recipe.component.css'
 })
 export class RecipeComponent implements OnInit {
+  private recipeSubscription: Subscription = new Subscription();
   recipeDetails!: RecipeDetails;
 
   constructor(private recipesService: RecipesService,
@@ -22,16 +24,19 @@ export class RecipeComponent implements OnInit {
   getRecipe() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id) {
-      this.recipesService.getRecipe(id).subscribe(
+      this.recipeSubscription = this.recipesService.getRecipe(id).subscribe(
         {
           next: (response) => {
             this.recipeDetails = response;
-            console.log(this.recipeDetails);
           },
           error: error => console.log(error)
         }
       );
     }
+  }
+
+  ngOnDestroy(): void {
+    this.recipeSubscription.unsubscribe();
   }
 }
 
