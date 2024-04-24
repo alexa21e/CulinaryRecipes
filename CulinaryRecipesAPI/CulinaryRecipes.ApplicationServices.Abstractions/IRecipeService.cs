@@ -7,7 +7,9 @@ namespace CulinaryRecipes.ApplicationServices.Abstractions
 	public interface IRecipeService
 	{
 		Task<List<RecipesToReturn>> GetRecipes(RecipeParameters param);
-		Task<int> GetNumberOfRecipes();
+        Task<List<RecipesToReturn>> GetRecipesByName(string name, RecipeParameters param);
+
+        Task<int> GetNumberOfRecipes();
         Task<RecipeToReturn> GetRecipeById(string id);
 
     }

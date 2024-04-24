@@ -25,7 +25,16 @@ namespace CulinaryRecipesAPI.Controllers
 			var noRecipes = await _recipeService.GetNumberOfRecipes();
 			return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
 		}
-		
+
+        [HttpGet("search/{name}")]
+        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByName(string name,
+            [FromQuery] RecipeParameters param)
+        {
+            var recipes = await _recipeService.GetRecipesByName(name, param);
+            var noRecipes = await _recipeService.GetNumberOfRecipes();
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<RecipeToReturn>> GetRecipeById(string id)
         {

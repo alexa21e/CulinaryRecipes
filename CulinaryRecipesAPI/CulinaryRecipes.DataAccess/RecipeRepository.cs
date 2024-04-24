@@ -17,9 +17,11 @@ namespace CulinaryRecipes.DataAccess
 
 		public async Task<List<RecipesToReturn>> GetRecipes(int skip, int pageSize)
 		{
-			var query = @"MATCH(r: Recipe) - [:CONTAINS_INGREDIENT]->(i: Ingredient), (a: Author) - [:WROTE]->(r)
-				RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
-				ORDER BY r.name SKIP $skip LIMIT $pageSize";
+			const string query = @"MATCH(r: Recipe) - [:CONTAINS_INGREDIENT]->(i: Ingredient), (a: Author) - [:WROTE]->(r)
+				                   RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
+				                   ORDER BY r.name      
+                                   SKIP $skip 
+                                   LIMIT $pageSize";
 
 			var parameters = new Dictionary<string, object>
 			{
@@ -41,9 +43,39 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
 		}
 
-		public async Task<int> GetNumberOfRecipes()
+        public async Task<List<RecipesToReturn>> GetRecipesByName(string name, int skip, int pageSize)
+        {
+            const string query = @"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
+                                   WHERE r.name CONTAINS $name
+                                   RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
+                                   ORDER BY r.name      
+                                   SKIP $skip 
+                                   LIMIT $pageSize";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "name", name },
+                { "skip", skip },
+                { "pageSize", pageSize }
+            };
+
+            var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
+
+            var recipes = records.Select(record => new RecipesToReturn
+            {
+                Id = record["Id"].As<string>(),
+                Name = record["Name"].As<string>(),
+                Author = record["Author"].As<string>(),
+                NumberOfIngredients = record["NumberOfIngredients"].As<int>(),
+                SkillLevel = record["SkillLevel"].As<string>()
+            }).ToList();
+
+            return recipes;
+        }
+
+        public async Task<int> GetNumberOfRecipes()
 		{
-			var query = @"MATCH (r:Recipe) RETURN count(r) AS NumberOfRecipes";
+			const string query = @"MATCH (r:Recipe) RETURN count(r) AS NumberOfRecipes";
 			var numberOfRecipes = await _neo4JDataAccess.ExecuteReadScalarAsync<int>(query);
 
 			return numberOfRecipes;
