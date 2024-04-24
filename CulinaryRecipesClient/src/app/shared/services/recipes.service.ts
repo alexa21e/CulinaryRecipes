@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { RecipeParams } from "../models/recipeParams";
 import { Pagination } from "../models/pagination";
 import { RecipeHome } from "../models/recipeHome";
+import { RecipeDetails } from "../models/recipeDetails";
 
 @Injectable({
     providedIn: 'root'
@@ -19,5 +20,9 @@ export class RecipesService {
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
         return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl, {params});
+    }
+
+    getRecipe(id: string){
+        return this.http.get<RecipeDetails>(this.baseUrl + '/' + id);
     }
 }

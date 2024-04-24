@@ -47,6 +47,6 @@ export class HomeComponent implements OnInit{
   }
 
   onRecipeClick(recipe: RecipeHome) {
-    this.router.navigate(['/recipe', recipe.name]);
+    this.router.navigate(['/recipe', recipe.id]);
   }
 }

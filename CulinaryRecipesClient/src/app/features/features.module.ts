@@ -7,6 +7,9 @@ import { RecipeComponent } from './recipe/recipe.component';
 
 import { DataViewModule } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
+import { DividerModule } from 'primeng/divider';
+import { CardModule } from 'primeng/card';
+import { FieldsetModule } from 'primeng/fieldset';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { TableModule } from 'primeng/table';
     CommonModule,
     SharedModule,
     DataViewModule,
-    TableModule
+    TableModule,
+    DividerModule,
+    CardModule,
+    FieldsetModule,
   ],
   exports: [
     HomeComponent
