@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit{
   params = new RecipeParams();
   count: number = 0;
   rowsPerPageOptions: number[] = [20];
+  searchText: string = '';
 
   constructor(
     private recipesService: RecipesService,
@@ -28,6 +29,18 @@ export class HomeComponent implements OnInit{
 
   getRecipes(){
     this.recipesSubscription = this.recipesService.getRecipes(this.params).subscribe(
+      {next: (response) => {
+        this.recipes = response.data;
+        this.params.pageNumber = response.pageNumber;
+        this.params.pageSize = response.pageSize;
+        this.count = response.count;
+      },
+      error: error => console.log(error)}
+    );
+  }
+
+  getRecipesByName(){
+    this.recipesSubscription = this.recipesService.getRecipesByName(this.searchText, this.params).subscribe(
       {next: (response) => {
         this.recipes = response.data;
         this.params.pageNumber = response.pageNumber;

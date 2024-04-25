@@ -2,7 +2,16 @@
     border: 1px solid #ccc;
     padding: 2rem;
     border-radius: 10px;
-    margin: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.search{
+    margin-right: 20px;
+    margin-top: 20px;
+    color: #0B5345;
 }
 
 ::ng-deep .p-datatable .p-datatable-thead > tr > th{
@@ -12,4 +21,8 @@
 ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight{
     color: #0B5345;
     background-color: #90b3ac;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-footer {
+    color: #0B5345;
 }

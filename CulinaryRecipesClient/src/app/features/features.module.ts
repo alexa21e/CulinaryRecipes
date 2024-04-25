@@ -10,6 +10,8 @@ import { TableModule } from 'primeng/table';
 import { DividerModule } from 'primeng/divider';
 import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { FieldsetModule } from 'primeng/fieldset';
     DividerModule,
     CardModule,
     FieldsetModule,
+    InputTextModule,
+    FormsModule
   ],
   exports: [
     HomeComponent

@@ -1,25 +1,33 @@
-<div class="card" *ngIf="recipes">
-    <p-table [value]="recipes" [tableStyle]="{'min-width': '60rem'}"  [paginator]="true" [totalRecords]="count" [rows]="20" [pageLinks]="5" [showPageLinks]="true" [lazy]="true" (onLazyLoad)="onPageChange($event)">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>Name</th>
-                <th>Author</th>
-                <th>Number of ingredients</th>
-                <th>Skill level</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-recipe>
-            <tr class="clickable-row" (click)="onRecipeClick(recipe)">
-                <td>{{recipe.name}}</td>
-                <td>{{recipe.author}}</td>
-                <td>{{recipe.numberOfIngredients}}</td>
-                <td>{{recipe.skillLevel}}</td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                In total there are {{count}} recipes.
-            </div>
-        </ng-template>
-    </p-table>
+<div class="home">
+    <div class="flex justify-content-end flex-wrap mb-5 search">
+        <span class="flex flex-column align-items-center gap-2">
+            <input pInputText type="text" placeholder="Search by name" aria-describedby="search-help" [(ngModel)]="searchText" (keyup.enter)="getRecipesByName()" />
+            <small id="search-help">Enter key word and press enter</small>
+        </span>       
+    </div>
+    <div class="card" *ngIf="recipes">
+        <p-table [value]="recipes" [tableStyle]="{'min-width': '60rem'}"  [paginator]="true" [totalRecords]="count" [rows]="20" [pageLinks]="5" [showPageLinks]="true" [lazy]="true" (onLazyLoad)="onPageChange($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Number of ingredients</th>
+                    <th>Skill level</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-recipe>
+                <tr class="clickable-row" (click)="onRecipeClick(recipe)">
+                    <td>{{recipe.name}}</td>
+                    <td>{{recipe.author}}</td>
+                    <td>{{recipe.numberOfIngredients}}</td>
+                    <td>{{recipe.skillLevel}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                    In total there are {{count}} recipes.
+                </div>
+            </ng-template>
+        </p-table>
+    </div>
 </div>
