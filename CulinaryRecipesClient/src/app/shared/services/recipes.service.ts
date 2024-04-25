@@ -22,6 +22,13 @@ export class RecipesService {
         return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl, {params});
     }
 
+    getRecipesByName(name: string, recipeParams: RecipeParams){
+        let params = new HttpParams();
+        params = params.append('pageNumber', recipeParams.pageNumber);
+        params = params.append('pageSize', recipeParams.pageSize);
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/search/${name}`, {params});
+    }
+
     getRecipe(id: string){
         return this.http.get<RecipeDetails>(this.baseUrl + '/' + id);
     }
