@@ -31,7 +31,7 @@ namespace CulinaryRecipesAPI.Controllers
             [FromQuery] RecipeParameters param)
         {
             var recipes = await _recipeService.GetRecipesByName(name, param);
-            var noRecipes = await _recipeService.GetNumberOfRecipes();
+            var noRecipes = await _recipeService.GetNumberOfRecipesByName(name);
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
         }
 

@@ -81,6 +81,20 @@ namespace CulinaryRecipes.DataAccess
 			return numberOfRecipes;
 		}
 
+        public async Task<int> GetNumberOfRecipesByName(string name)
+        {
+            const string query = @"MATCH (r:Recipe) WHERE r.name CONTAINS $name RETURN count(r) AS NumberOfRecipes";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "name", name }
+            };
+
+            var numberOfRecipes = await _neo4JDataAccess.ExecuteReadScalarAsync<int>(query, parameters);
+
+            return numberOfRecipes;
+        }
+
         public async Task<RecipeToReturn> GetRecipeById(string id)
         {
             const string query = @"MATCH (r:Recipe {id: $id}) - [:CONTAINS_INGREDIENT]->(i: Ingredient)  
