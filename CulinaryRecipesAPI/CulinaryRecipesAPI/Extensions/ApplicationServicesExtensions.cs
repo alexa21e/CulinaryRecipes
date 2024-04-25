@@ -12,16 +12,6 @@ namespace CulinaryRecipesAPI.Extensions
 		public static IServiceCollection AddApplicationServices(this IServiceCollection services,
 			IConfiguration config)
 		{
-			/*			services.AddSingleton<IGraphClient>(x =>
-						{
-							var neo4jConfig = config.GetSection("Neo4j");
-							var client = new BoltGraphClient(neo4jConfig["Url"], neo4jConfig["Username"], neo4jConfig["Password"]);
-							client.ConnectAsync().Wait();
-							return client;
-						});*/
-
-
-
 			services.Configure<ApplicationSettings>(config.GetSection("ApplicationSettings"));
 
 			var settings = new ApplicationSettings();
@@ -48,7 +38,9 @@ namespace CulinaryRecipesAPI.Extensions
 			});
 
 			services.AddScoped<IRecipeRepository, RecipeRepository>();
+			services.AddScoped<IIngredientRepository, IngredientRepository>();
 			services.AddScoped<IRecipeService, RecipeService>();
+			services.AddScoped<IIngredientService, IngredientService>();
 
 			return services;
 		}
