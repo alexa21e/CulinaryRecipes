@@ -27,6 +27,11 @@ namespace CulinaryRecipes.ApplicationServices
             return await _recipeRepository.GetRecipesByName(name, skip, param.PageSize);
         }
 
+		public async Task<List<RecipesToReturn>> GetRecipesByIngredients(string[] selectedIngredients, RecipeParameters param) {
+            var skip = (param.PageNumber - 1) * param.PageSize;
+            return await _recipeRepository.GetRecipesByIngredients(selectedIngredients, skip, param.PageSize);
+        }
+
 		public async Task<int> GetNumberOfRecipes()
 		{
 			return await _recipeRepository.GetNumberOfRecipes();
@@ -35,6 +40,11 @@ namespace CulinaryRecipes.ApplicationServices
         public async Task<int> GetNumberOfRecipesByName(string name)
         {
             return await _recipeRepository.GetNumberOfRecipesByName(name);
+        }
+
+        public async Task<int> GetNumberOfRecipesByIngredients(string[] selectedIngredients)
+        {
+            return await _recipeRepository.GetNumberOfRecipesByIngredients(selectedIngredients);
         }
 
         public async Task<RecipeToReturn> GetRecipeById(string id)
