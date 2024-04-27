@@ -7,8 +7,10 @@ namespace CulinaryRecipes.DataAccess.Abstractions
 	{
 		Task<List<RecipesToReturn>> GetRecipes(int skip, int pageSize);
         Task<List<RecipesToReturn>> GetRecipesByName(string name, int skip, int pageSize);
-		Task<int> GetNumberOfRecipes();
+        Task<List<RecipesToReturn>> GetRecipesByIngredients(string[] selectedIngredients, int skip, int pageSize);
+        Task<int> GetNumberOfRecipes();
         Task<int> GetNumberOfRecipesByName(string name);
+        Task<int> GetNumberOfRecipesByIngredients(string[] selectedIngredients);
         Task<RecipeToReturn> GetRecipeById(string id);
     }
 }

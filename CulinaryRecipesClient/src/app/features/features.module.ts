@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from 'primeng/api';
+import { FormsModule } from '@angular/forms';
 
+import { SharedModule } from '../shared/shared.module';
 import { HomeComponent } from './home/home.component';
 import { RecipeComponent } from './recipe/recipe.component';
 
@@ -11,7 +12,8 @@ import { DividerModule } from 'primeng/divider';
 import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { ListboxModule } from 'primeng/listbox';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { FormsModule } from '@angular/forms';
     CardModule,
     FieldsetModule,
     InputTextModule,
-    FormsModule
+    FormsModule,
+    ListboxModule,
+    ButtonModule
   ],
   exports: [
     HomeComponent

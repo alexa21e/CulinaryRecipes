@@ -27,11 +27,21 @@ namespace CulinaryRecipesAPI.Controllers
 		}
 
         [HttpGet("search/{name}")]
-        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByName(string name,
+        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByName([FromRoute]string name,
             [FromQuery] RecipeParameters param)
         {
             var recipes = await _recipeService.GetRecipesByName(name, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByName(name);
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+        }
+
+        [HttpGet("search/ingredients")]
+        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByIngredients(
+            [FromQuery]string selectedIngredients, [FromQuery] RecipeParameters param)
+        {
+            var ingredients = selectedIngredients.Split(',');
+            var recipes = await _recipeService.GetRecipesByIngredients(ingredients, param);
+            var noRecipes = await _recipeService.GetNumberOfRecipesByIngredients(ingredients);
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
         }
 
