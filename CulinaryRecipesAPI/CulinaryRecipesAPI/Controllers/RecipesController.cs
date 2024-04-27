@@ -19,7 +19,7 @@ namespace CulinaryRecipesAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipes([FromQuery]RecipeParameters param)
+		public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipes([FromQuery] RecipeParameters param)
 		{
 			var recipes = await _recipeService.GetRecipes(param);
 			var noRecipes = await _recipeService.GetNumberOfRecipes();
@@ -27,7 +27,7 @@ namespace CulinaryRecipesAPI.Controllers
 		}
 
         [HttpGet("search/{name}")]
-        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByName([FromRoute]string name,
+        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByName([FromRoute] string name,
             [FromQuery] RecipeParameters param)
         {
             var recipes = await _recipeService.GetRecipesByName(name, param);
@@ -37,11 +37,20 @@ namespace CulinaryRecipesAPI.Controllers
 
         [HttpGet("search/ingredients")]
         public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByIngredients(
-            [FromQuery]string selectedIngredients, [FromQuery] RecipeParameters param)
+            [FromQuery] string selectedIngredients, [FromQuery] RecipeParameters param)
         {
             var ingredients = selectedIngredients.Split(',');
             var recipes = await _recipeService.GetRecipesByIngredients(ingredients, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByIngredients(ingredients);
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+        }
+
+        [HttpGet("search/author/{authorName}")]
+        public async Task<ActionResult<Pagination<RecipesToReturn>>>
+            GetRecipesByAuthor([FromRoute] string authorName, [FromQuery] string clickedRecipeId, [FromQuery] RecipeParameters param)
+        {
+            var recipes = await _recipeService.GetRecipesByAuthor(authorName, clickedRecipeId, param);
+            var noRecipes = await _recipeService.GetNumberOfRecipesByAuthor(authorName);
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
         }
 
