@@ -13,6 +13,7 @@ import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { ListboxModule } from 'primeng/listbox';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ListboxModule } from 'primeng/listbox';
     FieldsetModule,
     InputTextModule,
     FormsModule,
-    ListboxModule
+    ListboxModule,
+    ButtonModule
   ],
   exports: [
     HomeComponent

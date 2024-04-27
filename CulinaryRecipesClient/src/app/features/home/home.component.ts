@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
     this.searchTerm.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((term: string) => this.ingredientsService.getIngredients({ name: term, pageNumber: 1, pageSize: 500 }))
+      switchMap((term: string) => this.ingredientsService.getIngredients({ name: term, pageNumber: 1, pageSize: 200 }))
     ).subscribe(ingredients => this.ingredients = ingredients.data);
   }
 
@@ -77,15 +77,28 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  getRecipesByIngredients() {
+    const ingredients = this.selectedIngredients.map(i => i.name);
+    this.recipesSubscription = this.recipesService.getRecipesByIngredients(ingredients, this.recipeParams).subscribe(
+      {
+        next: (response) => {
+          this.recipes = response.data;
+          this.recipeParams.pageNumber = response.pageNumber;
+          this.recipeParams.pageSize = response.pageSize;
+          this.recipesCount = response.count;
+        },
+        error: error => console.log(error)
+      }
+    );
+  }
+
   getIngredients() {
     this.ingredientsSubscription = this.ingredientsService.getIngredients(this.ingredientsParams).subscribe(
       {
         next: (response) => {
-          console.log(response);
           this.ingredients = response.data;
           this.ingredientsParams.pageNumber = response.pageNumber;
           this.ingredientsParams.pageSize = response.pageSize;
-          console.log(this.ingredients);
         },
         error: error => console.log(error)
       }
@@ -109,11 +122,20 @@ export class HomeComponent implements OnInit {
     if (value) this.selectAll = value.length === this.ingredients.length;
   }
 
-  onFilter($event: ListboxFilterEvent) {
-    console.log("works");
+  onIngredientsSearch($event: ListboxFilterEvent) {
     if ($event.originalEvent.target) {
       this.searchTerm.next(($event.originalEvent.target as HTMLInputElement).value);
     }
+  }
+
+  clearFilters() {
+    this.selectedIngredients = [];
+    this.selectAll = false;
+    this.getRecipes();
+  }
+
+  filterRecipes() {
+    this.getRecipesByIngredients();
   }
 
   ngOnDestroy(): void {

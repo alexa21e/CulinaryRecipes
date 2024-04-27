@@ -37,6 +37,11 @@
     margin-bottom: 2%;
 }
 
+::ng-deep .p-button{
+    background-color: #0b5345;
+    border-color: #0b5345;
+}
+
 ::ng-deep .p-card .p-card-content {
     padding: 0.5rem 0;
 }

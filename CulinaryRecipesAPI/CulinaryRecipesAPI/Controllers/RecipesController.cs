@@ -37,10 +37,11 @@ namespace CulinaryRecipesAPI.Controllers
 
         [HttpGet("search/ingredients")]
         public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByIngredients(
-            [FromQuery]string[] selectedIngredients, [FromQuery] RecipeParameters param)
+            [FromQuery]string selectedIngredients, [FromQuery] RecipeParameters param)
         {
-            var recipes = await _recipeService.GetRecipesByIngredients(selectedIngredients, param);
-            var noRecipes = await _recipeService.GetNumberOfRecipesByIngredients(selectedIngredients);
+            var ingredients = selectedIngredients.Split(',');
+            var recipes = await _recipeService.GetRecipesByIngredients(ingredients, param);
+            var noRecipes = await _recipeService.GetNumberOfRecipesByIngredients(ingredients);
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
         }
 

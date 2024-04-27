@@ -5,9 +5,13 @@
             [style]="{ width: '100%', 'max-height': '320px' }" [virtualScroll]="true" 
             [filter]="true" [virtualScrollItemSize]="90" [multiple]="true" [checkbox]="true" 
             [showToggleAll]="false" [metaKeySelection]="false" (onChange)="onIngredientsChange($event)" 
-            (onFilter)="onFilter($event)" aria-describedby="filter">
+            (onFilter)="onIngredientsSearch($event)" aria-describedby="filter">
         </p-listbox>
         <small id="filter">Search by name for more</small>
+        <div class="flex flex-row">
+            <p-button size="small" (onClick)="filterRecipes()" class="mr-2">Filter by ingredients</p-button>
+            <p-button size="small" (onClick)="clearFilters()">Clear filter</p-button>
+        </div>
     </div>
     <div class="flex flex-column justify-content-center main" style="max-width: 75%">
         <div class="flex flex-row align-items-center func">
@@ -17,7 +21,7 @@
             </div>
             <div class="search" style="margin-left: auto;">
                 <span class="flex flex-column align-items-center gap-2">
-                    <input pInputText type="text" placeholder="Search by name" aria-describedby="search-help"
+                    <input pInputText type="text" placeholder="Search recipes by name" aria-describedby="search-help"
                         [(ngModel)]="searchText" (keyup.enter)="getRecipesByName()" />
                     <small id="search-help">Enter key word and press enter</small>
                 </span>
