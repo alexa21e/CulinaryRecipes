@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CulinaryRecipesAPI.Controllers
 {
 	[ApiController]
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	public class RecipesController : ControllerBase
 	{
 		private readonly IRecipeService _recipeService;
@@ -45,12 +45,33 @@ namespace CulinaryRecipesAPI.Controllers
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
         }
 
-        [HttpGet("search/author/{authorName}")]
+        [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}")]
         public async Task<ActionResult<Pagination<RecipesToReturn>>>
-            GetRecipesByAuthor([FromRoute] string authorName, [FromQuery] string clickedRecipeId, [FromQuery] RecipeParameters param)
+            GetRecipesByAuthor([FromRoute] string authorName, [FromRoute] string clickedRecipeId, [FromQuery] RecipeParameters param)
         {
             var recipes = await _recipeService.GetRecipesByAuthor(authorName, clickedRecipeId, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByAuthor(authorName);
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+        }
+
+        [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}/search/name")]
+        public async Task<ActionResult<Pagination<RecipesToReturn>>>
+            GetRecipesByAuthorAndName([FromRoute] string clickedRecipeId, [FromRoute] string authorName, [FromQuery] string recipeName,
+                [FromQuery] RecipeParameters param)
+        {
+            var recipes = await _recipeService.GetRecipesByAuthorAndName(authorName, clickedRecipeId, recipeName, param);
+            var noRecipes = await _recipeService.GetNumberOfRecipesByAuthorAndName(authorName, recipeName);
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+        }
+
+        [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}/search/ingredients")]
+
+        public async Task<ActionResult<Pagination<RecipesToReturn>>>
+            GetRecipesByAuthorAndIngredients([FromRoute] string authorName, [FromRoute] string clickedRecipeId, 
+                [FromQuery] string selectedIngredients, [FromQuery] RecipeParameters param)
+        {
+            var recipes = await _recipeService.GetRecipesByAuthorAndIngredients(authorName, clickedRecipeId, selectedIngredients, param);
+            var noRecipes = await _recipeService.GetNumberOfRecipesByAuthorAndIngredients(authorName, selectedIngredients);
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
         }
 
