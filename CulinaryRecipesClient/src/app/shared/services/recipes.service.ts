@@ -26,7 +26,8 @@ export class RecipesService {
         let params = new HttpParams();
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/search/${name}`, {params});
+        params = params.append('name', name);
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/search/name`, {params});
     }
 
     getRecipesByIngredients(ingredients: string[], recipeParams: RecipeParams){

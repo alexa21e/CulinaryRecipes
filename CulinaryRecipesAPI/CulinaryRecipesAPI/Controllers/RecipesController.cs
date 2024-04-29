@@ -1,6 +1,5 @@
 using CulinaryRecipes.ApplicationServices.Abstractions;
 using CulinaryRecipes.DataObjects;
-using CulinaryRecipes.Domain;
 using CulinaryRecipes.Domain.Specifications;
 using CulinaryRecipesAPI.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -26,8 +25,8 @@ namespace CulinaryRecipesAPI.Controllers
 			return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
 		}
 
-        [HttpGet("search/{name}")]
-        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByName([FromRoute] string name,
+        [HttpGet("search/name")]
+        public async Task<ActionResult<Pagination<RecipesToReturn>>> GetRecipesByName([FromQuery] string name,
             [FromQuery] RecipeParameters param)
         {
             var recipes = await _recipeService.GetRecipesByName(name, param);
