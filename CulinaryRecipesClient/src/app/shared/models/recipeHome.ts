@@ -1,5 +1,5 @@
 export interface RecipeHome {
-    id: number;
+    id: string;
     name: string;
     author: string;
     numberOfIngredients: number;

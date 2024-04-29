@@ -14,11 +14,13 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
+import { AuthorComponent } from './author/author.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
-    RecipeComponent
+    RecipeComponent,
+    AuthorComponent
   ],
   imports: [
     CommonModule,
