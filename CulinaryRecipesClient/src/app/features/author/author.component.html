@@ -43,7 +43,7 @@
                     <ng-template pTemplate="body" let-recipe>
                         <tr class="clickable-row" (click)="onRecipeClick(recipe)">
                             <td>{{recipe.name}}</td>
-                            <td><a (click)="onAuthorClick($event, recipe.author, recipe.id)">{{recipe.author}}</a></td>
+                            <td>{{recipe.author}}</td>
                             <td>{{recipe.numberOfIngredients}}</td>
                             <td>{{recipe.skillLevel}}</td>
                         </tr>

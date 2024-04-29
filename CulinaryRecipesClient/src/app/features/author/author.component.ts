@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { RecipesService } from '../../shared/services/recipes.service';
-import { RecipeParams } from '../../shared/models/recipeParams';
-import { RecipeHome } from '../../shared/models/recipeHome';
-import { Router } from '@angular/router';
 import { Subject, Subscription, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
-import { IngredientsService } from '../../shared/services/ingredients.service';
+import { RecipeHome } from '../../shared/models/recipeHome';
 import { Ingredient } from '../../shared/models/ingredient';
+import { RecipeParams } from '../../shared/models/recipeParams';
 import { IngredientParams } from '../../shared/models/ingredientParams';
+import { RecipesService } from '../../shared/services/recipes.service';
+import { IngredientsService } from '../../shared/services/ingredients.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ListboxFilterEvent } from 'primeng/listbox';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  selector: 'app-author',
+  templateUrl: './author.component.html',
+  styleUrl: './author.component.css'
 })
-export class HomeComponent implements OnInit {
+export class AuthorComponent implements OnInit{
   private recipesSubscription: Subscription = new Subscription();
   private ingredientsSubscription: Subscription = new Subscription();
 
@@ -33,14 +33,24 @@ export class HomeComponent implements OnInit {
   selectedIngredients!: any[];
   selectAll: any;
 
+  authorName!: string;
+  clickedRecipeId!: string;
+
   constructor(
     private recipesService: RecipesService,
     private ingredientsService: IngredientsService,
-    private router: Router) {
+    private router: Router,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    this.getRecipes();
+    let authorName = this.route.snapshot.paramMap.get('name');
+    if (authorName) this.authorName = authorName;
+
+    let clickedRecipeId = this.route.snapshot.paramMap.get('id');
+    if (clickedRecipeId) this.clickedRecipeId = clickedRecipeId;
+
+    this.getRecipesByAuthor();
     this.getIngredients();
     this.searchTerm.pipe(
       debounceTime(300),
@@ -49,22 +59,25 @@ export class HomeComponent implements OnInit {
     ).subscribe(ingredients => this.ingredients = ingredients.data);
   }
 
-  getRecipes() {
-    this.recipesSubscription = this.recipesService.getRecipes(this.recipeParams).subscribe(
-      {
-        next: (response) => {
-          this.recipes = response.data;
-          this.recipeParams.pageNumber = response.pageNumber;
-          this.recipeParams.pageSize = response.pageSize;
-          this.recipesCount = response.count;
-        },
-        error: error => console.log(error)
-      }
-    );
+  getRecipesByAuthor() {
+    if (this.authorName && this.clickedRecipeId) {
+      this.recipesSubscription = this.recipesService.getRecipesByAuthor(this.authorName, this.clickedRecipeId, this.recipeParams).subscribe(
+        {
+          next: (response) => {
+            this.recipes = response.data;
+            this.recipeParams.pageNumber = response.pageNumber;
+            this.recipeParams.pageSize = response.pageSize;
+            this.recipesCount = response.count;
+          },
+          error: error => console.log(error)
+        }
+      );
+    }
   }
 
   getRecipesByName() {
-    this.recipesSubscription = this.recipesService.getRecipesByName(this.searchText, this.recipeParams).subscribe(
+    this.recipesSubscription = this.recipesService.getRecipesByAuthorAndName(this.authorName, 
+                this.clickedRecipeId, this.searchText, this.recipeParams).subscribe(
       {
         next: (response) => {
           this.recipes = response.data;
@@ -78,8 +91,9 @@ export class HomeComponent implements OnInit {
   }
 
   getRecipesByIngredients() {
-    const ingredients = this.selectedIngredients.map(i => i.name);
-    this.recipesSubscription = this.recipesService.getRecipesByIngredients(ingredients, this.recipeParams).subscribe(
+    let ingredients = this.selectedIngredients.map(i => i.name);
+    let ingredientsString = ingredients.join(',');
+    this.recipesSubscription = this.recipesService.getRecipesByAuthorAndIngredients(this.authorName, this.clickedRecipeId, ingredientsString, this.recipeParams).subscribe(
       {
         next: (response) => {
           this.recipes = response.data;
@@ -109,17 +123,12 @@ export class HomeComponent implements OnInit {
     const newPageNumber = event.first / event.rows + 1;
     if (this.recipeParams.pageNumber !== newPageNumber) {
       this.recipeParams.pageNumber = newPageNumber;
-      this.getRecipes();
+      this.getRecipesByAuthor();
     }
   }
 
   onRecipeClick(recipe: RecipeHome) {
     this.router.navigate(['/recipe', recipe.id]);
-  }
-
-  onAuthorClick(event: Event, authorName: string, clickedRecipeId: string) {
-    event.stopPropagation();
-    this.router.navigate(['/author', authorName, 'id', clickedRecipeId] );
   }
 
   onIngredientsChange(event: any) {
@@ -136,7 +145,7 @@ export class HomeComponent implements OnInit {
   clearFilters() {
     this.selectedIngredients = [];
     this.selectAll = false;
-    this.getRecipes();
+    this.getRecipesByAuthor();
   }
 
   filterRecipes() {

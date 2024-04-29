@@ -10,7 +10,7 @@ import { RecipeDetails } from "../models/recipeDetails";
 })
 
 export class RecipesService {
-    baseUrl = 'https://localhost:5001/Recipes'
+    baseUrl = 'https://localhost:5001/api/Recipes'
     
     constructor(private http: HttpClient) {
     }
@@ -36,6 +36,29 @@ export class RecipesService {
         const formattedIngredients = ingredients.join(',');
         params = params.append('selectedIngredients', formattedIngredients);
         return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl + '/search/ingredients' , {params});
+    }
+
+    getRecipesByAuthor(authorName: string, clickedRecipeId: string, recipeParams: RecipeParams){
+        let params = new HttpParams();
+        params = params.append('pageNumber', recipeParams.pageNumber);
+        params = params.append('pageSize', recipeParams.pageSize);
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}`, {params});
+    }
+
+    getRecipesByAuthorAndName(authorName: string, clickedRecipeId: string, recipeName: string, recipeParams: RecipeParams){
+        let params = new HttpParams();
+        params = params.append('recipeName', recipeName);
+        params = params.append('pageNumber', recipeParams.pageNumber);
+        params = params.append('pageSize', recipeParams.pageSize);
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/name`, {params});
+    }
+
+    getRecipesByAuthorAndIngredients(authorName: string, clickedRecipeId: string, ingredients: string, recipeParams: RecipeParams){
+        let params = new HttpParams();
+        params = params.append('pageNumber', recipeParams.pageNumber);
+        params = params.append('pageSize', recipeParams.pageSize);
+        params = params.append('selectedIngredients', ingredients);
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/ingredients`, {params});
     }
 
     getRecipe(id: string){
