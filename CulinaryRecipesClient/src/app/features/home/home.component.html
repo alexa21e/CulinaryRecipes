@@ -15,10 +15,6 @@
     </div>
     <div class="flex flex-column justify-content-center main" style="max-width: 75%">
         <div class="flex flex-row align-items-center func">
-            <div class="sort">
-                <span class="flex flex-column align-items-center gap-2">
-                </span>
-            </div>
             <div class="search" style="margin-left: auto;">
                 <span class="flex flex-column align-items-center gap-2">
                     <input pInputText type="text" placeholder="Search recipes by name" aria-describedby="search-help"
@@ -31,13 +27,13 @@
             <p-card *ngIf="recipes">
                 <p-table [value]="recipes" [tableStyle]="{'min-width': '60rem'}" [paginator]="true"
                     [totalRecords]="recipesCount" [rows]="20" [pageLinks]="5" [showPageLinks]="true" [lazy]="true"
-                    (onLazyLoad)="onPageChange($event)">
+                    (onLazyLoad)="onPageChange($event)" (onSort)="onSort($event)">
                     <ng-template pTemplate="header">
                         <tr>
                             <th>Name</th>
                             <th>Author</th>
-                            <th>Number of ingredients</th>
-                            <th>Skill level</th>
+                            <th pSortableColumn="numberOfIngredients">Number of ingredients <p-sortIcon field="numberOfIngredients"></p-sortIcon></th>
+                            <th pSortableColumn="skillLevel">Skill level <p-sortIcon field="skillLevel"></p-sortIcon></th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-recipe>

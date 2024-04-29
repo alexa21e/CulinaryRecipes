@@ -19,14 +19,16 @@ export class RecipesService {
         let params = new HttpParams();
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
+        params = params.append('sortOrder', recipeParams.sortOrder);
         return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl, {params});
     }
 
     getRecipesByName(name: string, recipeParams: RecipeParams){
         let params = new HttpParams();
+        params = params.append('name', name);
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
-        params = params.append('name', name);
+        params = params.append('sortOrder', recipeParams.sortOrder);
         return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/search/name`, {params});
     }
 
@@ -34,6 +36,7 @@ export class RecipesService {
         let params = new HttpParams();
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
+        params = params.append('sortOrder', recipeParams.sortOrder);
         const formattedIngredients = ingredients.join(',');
         params = params.append('selectedIngredients', formattedIngredients);
         return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl + '/search/ingredients' , {params});
@@ -43,6 +46,7 @@ export class RecipesService {
         let params = new HttpParams();
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
+        params = params.append('sortOrder', recipeParams.sortOrder);
         return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}`, {params});
     }
 
@@ -51,6 +55,7 @@ export class RecipesService {
         params = params.append('recipeName', recipeName);
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
+        params = params.append('sortOrder', recipeParams.sortOrder);
         return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/name`, {params});
     }
 
@@ -58,6 +63,7 @@ export class RecipesService {
         let params = new HttpParams();
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
+        params = params.append('sortOrder', recipeParams.sortOrder);
         params = params.append('selectedIngredients', ingredients);
         return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/ingredients`, {params});
     }
