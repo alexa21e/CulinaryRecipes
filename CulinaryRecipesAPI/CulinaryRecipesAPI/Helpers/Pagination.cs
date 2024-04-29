@@ -5,12 +5,14 @@
 		public int PageNumber { get; set; }
 		public int PageSize { get; set; }
 		public int Count { get; set; }
+		public string SortOrder { get; set; }
 		public IReadOnlyList<T> Data { get; set; }
-		public Pagination(int pageNumber, int pageSize, int count, IReadOnlyList<T> data)
+		public Pagination(int pageNumber, int pageSize, int count, string sortOrder, IReadOnlyList<T> data)
 		{
 			PageNumber = pageNumber;
 			PageSize = pageSize;
 			Count = count;
+			SortOrder = sortOrder;
 			Data = data;
 		}
 	}

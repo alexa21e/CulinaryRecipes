@@ -15,15 +15,17 @@ namespace CulinaryRecipes.DataAccess
 			_neo4JDataAccess = neo4jDataAccess;
 		}
 
-		public async Task<List<RecipesToReturn>> GetRecipes(int skip, int pageSize)
+		public async Task<List<RecipesToReturn>> GetRecipes(int skip, int pageSize, string sortOrder)
 		{
-			const string query = @"MATCH(r: Recipe) - [:CONTAINS_INGREDIENT]->(i: Ingredient), (a: Author) - [:WROTE]->(r)
-				                   RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
-				                   ORDER BY r.name      
-                                   SKIP $skip 
-                                   LIMIT $pageSize";
+            var order = ParseSortOrder(sortOrder);
 
-			var parameters = new Dictionary<string, object>
+			var query= $@"MATCH(r: Recipe) - [:CONTAINS_INGREDIENT]->(i: Ingredient), (a: Author) - [:WROTE]->(r)
+				          RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
+				          {order}     
+                          SKIP $skip 
+                          LIMIT $pageSize";
+
+            var parameters = new Dictionary<string, object>
 			{
 				{ "skip", skip },
 				{ "pageSize", pageSize }
@@ -43,14 +45,16 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
 		}
 
-        public async Task<List<RecipesToReturn>> GetRecipesByName(string name, int skip, int pageSize)
+        public async Task<List<RecipesToReturn>> GetRecipesByName(string name, int skip, int pageSize, string sortOrder)
         {
-            const string query = @"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
-                                   WHERE r.name CONTAINS $name
-                                   RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
-                                   ORDER BY r.name      
-                                   SKIP $skip 
-                                   LIMIT $pageSize";
+            var order = ParseSortOrder(sortOrder);
+
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
+                           WHERE r.name CONTAINS $name
+                           RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
+                           {order}      
+                           SKIP $skip 
+                           LIMIT $pageSize";
 
             var parameters = new Dictionary<string, object>
             {
@@ -73,14 +77,15 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByIngredients(string[] selectedIngredients, int skip, int pageSize)
+        public async Task<List<RecipesToReturn>> GetRecipesByIngredients(string[] selectedIngredients, int skip, int pageSize, string sortOrder)
         {
+            var order = ParseSortOrder(sortOrder);
+
             var matchClauses = selectedIngredients.Select((ingredient, index) => 
                                                 $"MATCH (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {{name: $ingredient{index}}})").ToList();
 
-            var query = @"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) " + string.Join(" ", matchClauses) + 
-                              " RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel" +
-                              " ORDER BY r.name SKIP $skip LIMIT $pageSize";
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) " + string.Join(" ", matchClauses) + 
+                              $" RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel {order} SKIP $skip LIMIT $pageSize";
 
             var parameters = new Dictionary<string, object>
             {
@@ -107,14 +112,16 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthor(string authorName, int skip, int pageSize)
+        public async Task<List<RecipesToReturn>> GetRecipesByAuthor(string authorName, int skip, int pageSize, string sortOrder)
         {
-            const string query = @"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
-                                   WHERE a.name = $authorName
-                                   RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
-                                   ORDER BY r.name
-                                   SKIP $skip
-                                   LIMIT $pageSize";
+            var order = ParseSortOrder(sortOrder);
+
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
+                           WHERE a.name = $authorName
+                           RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
+                           {order}
+                           SKIP $skip
+                           LIMIT $pageSize";
 
             var parameters = new Dictionary<string, object>
             {
@@ -137,14 +144,17 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndName(string authorName, string recipeName, int skip, int pageSize)
+        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndName(string authorName, string recipeName, int skip, int pageSize,
+            string sortOrder)
         {
-            const string query = @"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
-                                   WHERE a.name = $authorName AND r.name CONTAINS $recipeName
-                                   RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
-                                   ORDER BY r.name
-                                   SKIP $skip
-                                   LIMIT $pageSize";
+            var order = ParseSortOrder(sortOrder);
+
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
+                           WHERE a.name = $authorName AND r.name CONTAINS $recipeName
+                           RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
+                           {order}
+                           SKIP $skip
+                           LIMIT $pageSize";
 
             var parameters = new Dictionary<string, object>
             {
@@ -169,15 +179,17 @@ namespace CulinaryRecipes.DataAccess
         }
 
         public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndIngredients(string authorName,
-            string[] selectedIngredients, int skip, int pageSize)
+            string[] selectedIngredients, int skip, int pageSize, string sortOrder)
         {
+            var order = ParseSortOrder(sortOrder);
+
             var matchClauses = selectedIngredients.Select((ingredient, index) =>
                                                                $"MATCH (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {{name: $ingredient{index}}})").ToList();
 
-            var query = @"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) " + string.Join(" ", matchClauses) +
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) " + string.Join(" ", matchClauses) +
                               " WHERE a.name = $authorName" +
                               " RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel" +
-                              " ORDER BY r.name SKIP $skip LIMIT $pageSize";
+                              " {order} SKIP $skip LIMIT $pageSize";
 
             var parameters = new Dictionary<string, object>
             {
@@ -340,6 +352,20 @@ namespace CulinaryRecipes.DataAccess
             };
 
             return recipe;
+        }
+
+        private string ParseSortOrder(string sortOrder)
+        {
+            var parts = sortOrder.Split('_');
+            var column = parts[0];
+            var direction = parts[1].ToUpper();
+
+            return column switch
+            {
+                "numberOfIngredients" => $"ORDER BY count(i) {direction}, r.name ASC",
+                "skillLevel" => $"ORDER BY CASE r.skillLevel WHEN 'Easy' THEN 1 WHEN 'More effort' THEN 2 WHEN 'A challenge' THEN 3 END {direction}, r.name ASC",
+                _ => $"ORDER BY r.name {direction}",
+            };
         }
     }
 }
