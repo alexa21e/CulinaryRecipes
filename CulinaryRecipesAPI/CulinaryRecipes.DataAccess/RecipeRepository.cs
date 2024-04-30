@@ -319,36 +319,49 @@ namespace CulinaryRecipes.DataAccess
 
         public async Task<RecipeToReturn> GetRecipeById(string id)
         {
-            const string query = @"MATCH (r:Recipe {id: $id}) - [:CONTAINS_INGREDIENT]->(i: Ingredient)  
-                                 RETURN r.id AS Id, r.name AS Name, r.description AS Description, r.preparationTime AS PreparationTime, 
-                                        r.cookingTime AS CookingTime, r.skillLevel AS SkillLevel, collect(i) AS Ingredients";
+            var query = @"MATCH (r:Recipe {id: $id}) - [:CONTAINS_INGREDIENT]->(i: Ingredient)  
+                          OPTIONAL MATCH (r) - [:COLLECTION]->(c: Collection)
+                          OPTIONAL MATCH (r) - [:KEYWORD]->(k: Keyword)
+                          OPTIONAL MATCH (r) - [:DIET_TYPE]->(d: DietType)
+                          RETURN r.id AS Id, r.name AS Name, r.description AS Description, r.preparationTime AS PreparationTime, 
+                                        r.cookingTime AS CookingTime, r.skillLevel AS SkillLevel, collect(DISTINCT i) AS Ingredients,
+                                        collect(DISTINCT c) AS Collections, collect(DISTINCT k) AS Keywords, collect(DISTINCT d) AS DietTypes";
 
             var parameters = new Dictionary<string, object>
             {
                 { "id", id }
             };
 
-            var record = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
+            var record = await _neo4JDataAccess.ExecuteReadSingleRecordAsync(query, parameters);
 
-            if (record == null || !record.Any())
+            if (!record.Any())
             {
                 return null;
             }
 
-            var ingredientsAsNodes = record[0]["Ingredients"].As<ICollection<INode>>();
+            var ingredientsAsNodes = record["Ingredients"].As<ICollection<INode>>();
+            var collectionsAsNodes = record["Collections"].As<ICollection<INode>>();
+            var keywordsAsNodes = record["Keywords"].As<ICollection<INode>>();
+            var dietAsNode = record["DietTypes"].As<ICollection<INode>>();
 
             var ingredients = ingredientsAsNodes.Select(node => node.Properties["name"].ToString()).ToList();
+            var collections = collectionsAsNodes.Select(node => node.Properties["name"].ToString()).ToList();
+            var keywords = keywordsAsNodes.Select(node => node.Properties["name"].ToString()).ToList();
+            var diets = dietAsNode.Select(node => node.Properties["name"].ToString()).ToList(); ;
 
             var recipe = new RecipeToReturn()
             {
                 Recipe = Recipe.Create(
-                    (string)record[0]["Id"],
-                    (string)record[0]["Name"],
-                    (string)record[0]["Description"],
-                    (long)record[0]["PreparationTime"],
-                    (long)record[0]["CookingTime"],
-                    (string)record[0]["SkillLevel"]),
-                Ingredients = ingredients
+                    (string)record["Id"],
+                    (string)record["Name"],
+                    (string)record["Description"],
+                    (long)record["PreparationTime"],
+                    (long)record["CookingTime"],
+                    (string)record["SkillLevel"]),
+                Ingredients = ingredients,
+                Collections = collections,
+                Keywords = keywords,
+                DietTypes = diets
             };
 
             return recipe;
