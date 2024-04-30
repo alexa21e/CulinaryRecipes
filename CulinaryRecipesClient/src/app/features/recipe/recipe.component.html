@@ -3,7 +3,7 @@
         <h1>{{recipeDetails.recipe.name}}</h1>
         <p-divider></p-divider>
         <p-fieldset legend="Description">
-           {{recipeDetails.recipe.description}}
+            {{recipeDetails.recipe.description}}
         </p-fieldset>
         <div class="flex flex-wrap" style="max-width: 100%">
             <div class="flex-1 m-2 border-round">
@@ -13,12 +13,44 @@
                     </ul>
                 </p-fieldset>
             </div>
-            <div class="flex-1 flex flex-column m-2 border-round">
+            <div class="flex-1 flex flex-column m-2 border-round align-content-center">
                 <p-fieldset legend="Cooking Time">
                     {{recipeDetails.recipe.cookingTime/60}} minutes
                 </p-fieldset>
                 <p-fieldset legend="Preparation Time" class="mt-4">
                     {{recipeDetails.recipe.preparationTime/60}} minutes
+                </p-fieldset>
+            </div>
+        </div>
+        <div class="flex flex-wrap" style="max-width: 100%">
+            <div class="flex-1 m-2 border-round">
+                <p-fieldset legend="Collections">
+                    <ul *ngIf="recipeDetails.collections.length; else noCollections">
+                        <li *ngFor="let collection of recipeDetails.collections">{{collection}}</li>
+                    </ul>
+                    <ng-template #noCollections>
+                        <p>The recipe is not part of any collection</p>
+                    </ng-template>
+                </p-fieldset>
+            </div>
+            <div class="flex-1 m-2 border-round">
+                <p-fieldset legend="Keywords">
+                    <ul *ngIf="recipeDetails.keywords.length; else noKeywords">
+                        <li *ngFor="let keyword of recipeDetails.keywords">{{keyword}}</li>
+                    </ul>
+                    <ng-template #noKeywords>
+                        <p>0 keywords associated to this recipe</p>
+                    </ng-template>
+                </p-fieldset>
+            </div>
+            <div class="flex-1 m-2 border-round">
+                <p-fieldset legend="DietTypes">
+                    <ul *ngIf="recipeDetails.dietTypes.length; else noDietTypes">
+                        <li *ngFor="let dietType of recipeDetails.dietTypes">{{dietType}}</li>
+                    </ul>
+                    <ng-template #noDietTypes>
+                        <p>The recipe is not associated to any diet type</p>
+                    </ng-template>
                 </p-fieldset>
             </div>
         </div>
