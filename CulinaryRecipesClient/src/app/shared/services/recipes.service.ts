@@ -4,6 +4,7 @@ import { RecipeParams } from "../models/recipeParams";
 import { Pagination } from "../models/pagination";
 import { RecipeHome } from "../models/recipeHome";
 import { RecipeDetails } from "../models/recipeDetails";
+import { SimilarRecipe } from "../models/similarRecipe";
 
 @Injectable({
     providedIn: 'root'
@@ -70,5 +71,9 @@ export class RecipesService {
 
     getRecipe(id: string){
         return this.http.get<RecipeDetails>(this.baseUrl + '/' + id);
+    }
+
+    getFiveMostSimilarRecipes(id: string){
+        return this.http.get<SimilarRecipe[]>(this.baseUrl + '/' + id + '/similar');
     }
 }
