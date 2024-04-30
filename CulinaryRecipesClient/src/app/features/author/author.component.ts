@@ -8,6 +8,7 @@ import { RecipesService } from '../../shared/services/recipes.service';
 import { IngredientsService } from '../../shared/services/ingredients.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListboxFilterEvent } from 'primeng/listbox';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-author',
@@ -36,6 +37,8 @@ export class AuthorComponent implements OnInit{
   authorName!: string;
   clickedRecipeId!: string;
 
+  selectedSortOption: string = '_asc'; 
+
   constructor(
     private recipesService: RecipesService,
     private ingredientsService: IngredientsService,
@@ -60,6 +63,7 @@ export class AuthorComponent implements OnInit{
   }
 
   getRecipesByAuthor() {
+    this.recipeParams.sortOrder = this.selectedSortOption;
     if (this.authorName && this.clickedRecipeId) {
       this.recipesSubscription = this.recipesService.getRecipesByAuthor(this.authorName, this.clickedRecipeId, this.recipeParams).subscribe(
         {
@@ -141,6 +145,17 @@ export class AuthorComponent implements OnInit{
       this.searchTerm.next(($event.originalEvent.target as HTMLInputElement).value);
     }
   }
+
+  onSort(event: SortEvent) {
+    console.log(event);
+    if (event) {
+      const sortField = event.field; 
+      const sortOrder = event.order === 1 ? 'asc' : 'desc';
+      const formattedSortOrder = `${sortField}_${sortOrder}`;
+      this.selectedSortOption = formattedSortOrder;
+      this.getRecipesByAuthor();
+  }
+}
 
   clearFilters() {
     this.selectedIngredients = [];

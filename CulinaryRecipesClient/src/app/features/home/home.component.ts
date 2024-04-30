@@ -8,6 +8,7 @@ import { IngredientsService } from '../../shared/services/ingredients.service';
 import { Ingredient } from '../../shared/models/ingredient';
 import { IngredientParams } from '../../shared/models/ingredientParams';
 import { ListboxFilterEvent } from 'primeng/listbox';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-home',
@@ -33,6 +34,8 @@ export class HomeComponent implements OnInit {
   selectedIngredients!: any[];
   selectAll: any;
 
+  selectedSortOption: string = '_asc'; 
+
   constructor(
     private recipesService: RecipesService,
     private ingredientsService: IngredientsService,
@@ -50,12 +53,14 @@ export class HomeComponent implements OnInit {
   }
 
   getRecipes() {
+    this.recipeParams.sortOrder = this.selectedSortOption;
     this.recipesSubscription = this.recipesService.getRecipes(this.recipeParams).subscribe(
       {
         next: (response) => {
           this.recipes = response.data;
           this.recipeParams.pageNumber = response.pageNumber;
           this.recipeParams.pageSize = response.pageSize;
+          this.recipeParams.sortOrder = response.sortOrder;
           this.recipesCount = response.count;
         },
         error: error => console.log(error)
@@ -130,6 +135,17 @@ export class HomeComponent implements OnInit {
   onIngredientsSearch($event: ListboxFilterEvent) {
     if ($event.originalEvent.target) {
       this.searchTerm.next(($event.originalEvent.target as HTMLInputElement).value);
+    }
+  }
+
+  onSort(event: SortEvent) {
+    console.log(event);
+    if (event) {
+      const sortField = event.field; 
+      const sortOrder = event.order === 1 ? 'asc' : 'desc';
+      const formattedSortOrder = `${sortField}_${sortOrder}`;
+      this.selectedSortOption = formattedSortOrder;
+      this.getRecipes();
     }
   }
 

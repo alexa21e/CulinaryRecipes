@@ -22,7 +22,7 @@ namespace CulinaryRecipesAPI.Controllers
 		{
 			var recipes = await _recipeService.GetRecipes(param);
 			var noRecipes = await _recipeService.GetNumberOfRecipes();
-			return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+			return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
 		}
 
         [HttpGet("search/name")]
@@ -31,7 +31,7 @@ namespace CulinaryRecipesAPI.Controllers
         {
             var recipes = await _recipeService.GetRecipesByName(name, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByName(name);
-            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
         [HttpGet("search/ingredients")]
@@ -41,7 +41,7 @@ namespace CulinaryRecipesAPI.Controllers
             var ingredients = selectedIngredients.Split(',');
             var recipes = await _recipeService.GetRecipesByIngredients(ingredients, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByIngredients(ingredients);
-            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
         [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}")]
@@ -50,7 +50,7 @@ namespace CulinaryRecipesAPI.Controllers
         {
             var recipes = await _recipeService.GetRecipesByAuthor(authorName, clickedRecipeId, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByAuthor(authorName);
-            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
         [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}/search/name")]
@@ -60,7 +60,7 @@ namespace CulinaryRecipesAPI.Controllers
         {
             var recipes = await _recipeService.GetRecipesByAuthorAndName(authorName, clickedRecipeId, recipeName, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByAuthorAndName(authorName, recipeName);
-            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
         [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}/search/ingredients")]
@@ -71,7 +71,7 @@ namespace CulinaryRecipesAPI.Controllers
         {
             var recipes = await _recipeService.GetRecipesByAuthorAndIngredients(authorName, clickedRecipeId, selectedIngredients, param);
             var noRecipes = await _recipeService.GetNumberOfRecipesByAuthorAndIngredients(authorName, selectedIngredients);
-            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, recipes));
+            return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
         [HttpGet("{id}")]

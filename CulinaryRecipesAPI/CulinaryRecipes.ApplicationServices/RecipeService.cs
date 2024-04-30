@@ -18,33 +18,35 @@ namespace CulinaryRecipes.ApplicationServices
 		public async Task<List<RecipesToReturn>> GetRecipes(RecipeParameters param)
 		{
 			var skip = (param.PageNumber - 1) * param.PageSize;
-			return await _recipeRepository.GetRecipes(skip, param.PageSize);
+			return await _recipeRepository.GetRecipes(skip, param.PageSize, param.SortOrder);
 		}
 
         public async Task<List<RecipesToReturn>> GetRecipesByName(string name, RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
-            return await _recipeRepository.GetRecipesByName(name, skip, param.PageSize);
+            return await _recipeRepository.GetRecipesByName(name, skip, param.PageSize, param.SortOrder);
         }
 
 		public async Task<List<RecipesToReturn>> GetRecipesByIngredients(string[] selectedIngredients, RecipeParameters param) {
             var skip = (param.PageNumber - 1) * param.PageSize;
-            return await _recipeRepository.GetRecipesByIngredients(selectedIngredients, skip, param.PageSize);
+            return await _recipeRepository.GetRecipesByIngredients(selectedIngredients, skip, param.PageSize, param.SortOrder);
         }
 
         public async Task<List<RecipesToReturn>> GetRecipesByAuthor(string authorName, string clickedRecipeId,
             RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
-            var recipes = await _recipeRepository.GetRecipesByAuthor(authorName, skip, param.PageSize);
+            var recipes = await _recipeRepository.GetRecipesByAuthor(authorName, skip, param.PageSize, param.SortOrder);
             recipes.RemoveAll(r => r.Id == clickedRecipeId);
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndName(string authorName, string clickedRecipeId, string recipeName, RecipeParameters param)
+        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndName(string authorName, string clickedRecipeId, string recipeName,
+            RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
-            var recipes = await _recipeRepository.GetRecipesByAuthorAndName(authorName, recipeName, skip, param.PageSize);
+            var recipes = await _recipeRepository.GetRecipesByAuthorAndName(authorName, recipeName, skip, param.PageSize,
+                param.SortOrder);
             recipes.RemoveAll(r => r.Id == clickedRecipeId);
             return recipes;
         }
@@ -54,7 +56,8 @@ namespace CulinaryRecipes.ApplicationServices
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
             var ingredients = selectedIngredients.Split(',');
-            var recipes = await _recipeRepository.GetRecipesByAuthorAndIngredients(authorName, ingredients, skip, param.PageSize);
+            var recipes = await _recipeRepository.GetRecipesByAuthorAndIngredients(authorName, ingredients, skip,
+                param.PageSize, param.SortOrder);
             recipes.RemoveAll(r => r.Id == clickedRecipeId);
             return recipes;
         }
