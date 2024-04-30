@@ -82,7 +82,36 @@ namespace CulinaryRecipes.DataAccess
 			}
 		}
 
-		private async Task<List<T>> ExecuteReadTransactionAsync<T>(string query, string returnObjectKey, IDictionary<string, object>? parameters)
+        public async Task<Dictionary<string, object>> ExecuteReadSingleRecordAsync(string query, IDictionary<string, object>? parameters)
+        {
+            try
+            {
+                parameters ??= new Dictionary<string, object>();
+
+                var result = await _session.ExecuteReadAsync(async tx =>
+                {
+                    var res = await tx.RunAsync(query, parameters);
+                    var record = await res.SingleAsync();
+
+                    var properties = new Dictionary<string, object>();
+                    foreach (var key in record.Keys)
+                    {
+                        properties[key] = record[key].As<object>();
+                    }
+
+                    return properties;
+                });
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("There was a problem while executing database query" + ex.Message);
+                throw;
+            }
+        }
+
+        private async Task<List<T>> ExecuteReadTransactionAsync<T>(string query, string returnObjectKey, IDictionary<string, object>? parameters)
 		{
 			try
 			{
