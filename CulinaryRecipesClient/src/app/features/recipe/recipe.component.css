@@ -2,6 +2,27 @@
     margin: 20px;
 }
 
+.loading{
+    margin: 15%;
+}
+
+.ingredients-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.sim-recipes{
+    margin: 0.5rem;
+    color:#5e958b;
+    cursor: pointer;
+}
+
+:host ::ng-deep .p-progress-spinner-circle {
+    stroke: #0B5345 !important;
+    background-color: #0B5345 !important;
+ }
+
 :host ::ng-deep p-fieldset legend {
     background-color: #bdd6d1;
     color: #0B5345;
@@ -10,3 +31,4 @@
 :host ::ng-deep .p-card{
     color: #0B5345;
 }
+

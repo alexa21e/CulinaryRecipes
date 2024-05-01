@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { HomeComponent } from './home/home.component';
 import { RecipeComponent } from './recipe/recipe.component';
+import { AuthorComponent } from './author/author.component';
 
 import { DataViewModule } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
@@ -14,7 +15,7 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { ListboxModule } from 'primeng/listbox';
 import { ButtonModule } from 'primeng/button';
-import { AuthorComponent } from './author/author.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AuthorComponent } from './author/author.component';
     InputTextModule,
     FormsModule,
     ListboxModule,
-    ButtonModule
+    ButtonModule,
+    ProgressSpinnerModule
   ],
   exports: [
     HomeComponent
