@@ -24,5 +24,11 @@ namespace CulinaryRecipesAPI.Controllers
             var noIngredients = await _ingredientService.GetNumberOfIngredients(param.Name);
             return Ok(new Pagination<Ingredient>(param.PageNumber, param.PageSize, noIngredients, "_asc", ingredients));
         }
+
+        [HttpGet("mostcommon")]
+        public async Task<ActionResult<List<Ingredient>>> GetMostCommonIngredients(int ingredientsNumber)
+        {
+            return await _ingredientService.GetMostCommonIngredients(ingredientsNumber);
+        }
     }
 }
