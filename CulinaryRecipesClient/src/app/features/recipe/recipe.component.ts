@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { RecipeDetails } from '../../shared/models/recipeDetails';
 import { RecipesService } from '../../shared/services/recipes.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SimilarRecipe } from '../../shared/models/similarRecipe';
 
 @Component({
   selector: 'app-recipe',
@@ -11,32 +12,75 @@ import { Subscription } from 'rxjs';
 })
 export class RecipeComponent implements OnInit {
   private recipeSubscription: Subscription = new Subscription();
+  private similarRecipesSubscription: Subscription = new Subscription();
+
   recipeDetails!: RecipeDetails;
+  similarRecipes: SimilarRecipe[] = [];
+
+  isLoading = true;
 
   constructor(private recipesService: RecipesService,
-    private activatedRoute: ActivatedRoute
-  ) { }
-
-  ngOnInit(): void {
-    this.getRecipe();
+    private activatedRoute: ActivatedRoute,
+    private router: Router) {
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+         this.loadData();
+        }
+    });
   }
 
-  getRecipe() {
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (id) {
-      this.recipeSubscription = this.recipesService.getRecipe(id).subscribe(
-        {
-          next: (response) => {
-            this.recipeDetails = response;
-          },
-          error: error => console.log(error)
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  getRecipe(id: string) {
+    this.recipeSubscription = this.recipesService.getRecipe(id).subscribe(
+      {
+        next: (response) => {
+          this.recipeDetails = response;
+          this.isLoading = false;
+        },
+        error: error => {
+          console.log(error);
+          this.isLoading = false;
         }
-      );
-    }
+      }
+    );
+  }
+
+  getFiveMostSimilarRecipes(id: string) {
+    this.similarRecipesSubscription = this.recipesService.getFiveMostSimilarRecipes(id).subscribe(
+      {
+        next: (response) => {
+          this.similarRecipes = response;
+          this.isLoading = false;
+        },
+        error: error => {
+          console.log(error);
+          this.isLoading = false;
+        }
+      }
+    );
+  }
+
+  loadData() {
+    this.isLoading = true;
+    this.activatedRoute.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.getRecipe(id);
+        this.getFiveMostSimilarRecipes(id);
+      }
+    });
+  }
+
+  onSimilarRecipeClick(id: string) {
+    this.router.navigate(['/recipe', id]);
   }
 
   ngOnDestroy(): void {
     this.recipeSubscription.unsubscribe();
+    this.similarRecipesSubscription.unsubscribe();
   }
 }
 

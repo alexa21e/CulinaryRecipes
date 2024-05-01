@@ -1,5 +1,4 @@
 ﻿using CulinaryRecipes.DataObjects;
-using CulinaryRecipes.Domain;
 using CulinaryRecipes.Domain.Specifications;
 
 namespace CulinaryRecipes.ApplicationServices.Abstractions
@@ -19,6 +18,6 @@ namespace CulinaryRecipes.ApplicationServices.Abstractions
         Task<int> GetNumberOfRecipesByAuthorAndName(string authorName, string recipeName);
         Task<int> GetNumberOfRecipesByAuthorAndIngredients(string authorName, string selectedIngredients);
         Task<RecipeToReturn> GetRecipeById(string id);
-
+        Task<List<SimilarRecipeToReturn>> GetFiveMostSimilarRecipes(string id);
     }
 }

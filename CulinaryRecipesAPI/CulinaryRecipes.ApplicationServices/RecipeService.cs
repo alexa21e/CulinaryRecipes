@@ -99,5 +99,10 @@ namespace CulinaryRecipes.ApplicationServices
         {
             return await _recipeRepository.GetRecipeById(id);
         }
+
+        public async Task<List<SimilarRecipeToReturn>> GetFiveMostSimilarRecipes(string id)
+        {
+            return await _recipeRepository.GetFiveMostSimilarRecipes(id);
+        }
 	}
 }

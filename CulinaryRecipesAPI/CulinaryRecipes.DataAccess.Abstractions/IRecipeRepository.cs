@@ -20,5 +20,6 @@ namespace CulinaryRecipes.DataAccess.Abstractions
         Task<int> GetNumberOfRecipesByAuthorAndName(string authorName, string recipeName);
         Task<int> GetNumberOfRecipesByAuthorAndIngredients(string authorName, string[] selectedIngredients);
         Task<RecipeToReturn> GetRecipeById(string id);
+        Task<List<SimilarRecipeToReturn>> GetFiveMostSimilarRecipes(string id);
     }
 }
