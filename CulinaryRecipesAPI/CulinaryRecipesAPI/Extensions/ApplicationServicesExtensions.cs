@@ -41,6 +41,8 @@ namespace CulinaryRecipesAPI.Extensions
 			services.AddScoped<IIngredientRepository, IngredientRepository>();
 			services.AddScoped<IRecipeService, RecipeService>();
 			services.AddScoped<IIngredientService, IngredientService>();
+			services.AddScoped<IAuthorRepository, AuthorRepository>();
+			services.AddScoped<IAuthorService, AuthorService>();
 
 			return services;
 		}

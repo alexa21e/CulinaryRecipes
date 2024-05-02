@@ -1,5 +1,12 @@
-.ingredients{
-    margin: 2%;
+.title{
+    margin-left: 4%;
+    color:#0b5345;
+}
+
+.ingredients {
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 2%;
     display: flex;
     align-items: center;
     color: #0b5345;
@@ -20,7 +27,8 @@
 .func {
     margin: 2%;
     display: flex;
-    align-items: center; }
+    align-items: center; 
+}
 
 .sort {
     display: flex;
@@ -41,17 +49,31 @@
     cursor: pointer;
 }
 
-::ng-deep .p-button{
+.left-column{
+    width: 100%;
+    margin-left:1%;
+    margin-right:1%;
+}
+
+.stats-recipes{
+    color:#5e958b;
+    cursor: pointer;
+    margin: 1%;
+}
+
+::ng-deep .p-button {
     background-color: #0b5345;
     border-color: #0b5345;
 }
 
 ::ng-deep .p-card .p-card-content {
-    padding: 0.5rem 0;
+    padding: 0.7rem 0;
+    color: #0b5345;
 }
 
-::ng-deep .p-card .p-card-body{
+::ng-deep .p-card .p-card-body {
     padding: 0.5rem;
+    color: #0b5345;
 }
 
 ::ng-deep .p-datatable .p-datatable-thead > tr > th {

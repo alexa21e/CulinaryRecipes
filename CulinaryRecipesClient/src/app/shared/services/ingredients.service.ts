@@ -23,4 +23,10 @@ export class IngredientsService {
         params = params.append('pageSize', ingredientParams.pageSize);
         return this.http.get<Pagination<Ingredient[]>>(this.baseUrl, {params});
     }
+
+    getMostCommonIngredients(ingredientsNumber: number) {
+        let params = new HttpParams();
+        params = params.append('ingredientsNumber', ingredientsNumber);
+        return this.http.get<Ingredient[]>(this.baseUrl + '/mostCommon', {params});
+    }
 }

@@ -15,7 +15,7 @@ namespace CulinaryRecipes.DataAccess
 
         public async Task<List<Ingredient>> GetIngredients(string name, int skip, int pageSize)
         {
-            const string query = @"MATCH (i:Ingredient) WHERE toLower(i.name) CONTAINS $name 
+            var query = @"MATCH (i:Ingredient) WHERE toLower(i.name) CONTAINS $name 
                                  RETURN i.name AS Name
                                  ORDER BY i.name 
                                  SKIP $skip 
@@ -35,9 +35,23 @@ namespace CulinaryRecipes.DataAccess
             return ingredients;
         }
 
+        public async Task<List<Ingredient>> GetMostCommonIngredients(int ingredientsNumber)
+        {
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient) 
+                          RETURN i.name AS Ingredient, COUNT(r) AS RecipeCount 
+                          ORDER BY RecipeCount DESC 
+                          LIMIT {ingredientsNumber}";
+
+            var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, null);
+
+            var ingredients = records.Select(record => Ingredient.Create(record["Ingredient"].As<string>())).ToList();
+
+            return ingredients;
+        }
+
         public async Task<int> GetNumberOfIngredients(string name)
         {
-            const string query = @"MATCH (i:Ingredient) WHERE i.name CONTAINS $name 
+            var query = @"MATCH (i:Ingredient) WHERE i.name CONTAINS $name 
                                  RETURN count(i) AS NumberOfIngredients";
 
             var parameters = new Dictionary<string, object>

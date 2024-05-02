@@ -74,15 +74,22 @@ namespace CulinaryRecipesAPI.Controllers
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
+        [HttpGet("mostcomplex")]
+        public async Task<ActionResult<List<RecipeStatsToReturn>>> GetMostComplexRecipes([FromQuery] int recipesNumber)
+        {
+            var recipes = await _recipeService.GetMostComplexRecipes(recipesNumber);
+            return Ok(recipes);
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<RecipeToReturn>> GetRecipeById(string id)
+        public async Task<ActionResult<RecipeToReturn>> GetRecipeById([FromRoute] string id)
         {
             var recipe = await _recipeService.GetRecipeById(id);
             return Ok(recipe);
         }
 
         [HttpGet("{id}/similar")]
-        public async Task<ActionResult<List<SimilarRecipeToReturn>>> GetFiveMostSimilarRecipes(string id)
+        public async Task<ActionResult<List<SimilarRecipeToReturn>>> GetFiveMostSimilarRecipes([FromRoute] string id)
         {
             var recipes = await _recipeService.GetFiveMostSimilarRecipes(id);
             return Ok(recipes);

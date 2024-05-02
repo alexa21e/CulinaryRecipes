@@ -20,6 +20,11 @@ namespace CulinaryRecipes.ApplicationServices
             return await _ingredientRepository.GetIngredients(param.Name, skip, param.PageSize);
         }
 
+        public async Task<List<Ingredient>> GetMostCommonIngredients(int ingredientsNumber)
+        {
+            return await _ingredientRepository.GetMostCommonIngredients(ingredientsNumber);
+        }
+
         public async Task<int> GetNumberOfIngredients(string name)
         {
             return await _ingredientRepository.GetNumberOfIngredients(name);
