@@ -13,6 +13,7 @@ namespace CulinaryRecipes.DataAccess.Abstractions
             int pageSize, string sortOrder);
         Task<List<RecipesToReturn>> GetRecipesByAuthorAndIngredients(string authorName,
             string[] selectedIngredients, int skip, int pageSize, string sortOrder);
+        Task<List<RecipeAsNameToReturn>> GetMostComplexRecipes(int recipesNumber);
         Task<int> GetNumberOfRecipes();
         Task<int> GetNumberOfRecipesByName(string name);
         Task<int> GetNumberOfRecipesByIngredients(string[] selectedIngredients);

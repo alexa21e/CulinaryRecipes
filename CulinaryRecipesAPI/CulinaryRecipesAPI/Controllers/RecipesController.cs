@@ -74,6 +74,13 @@ namespace CulinaryRecipesAPI.Controllers
             return Ok(new Pagination<RecipesToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
+        [HttpGet("mostcomplex")]
+        public async Task<ActionResult<List<RecipeAsNameToReturn>>> GetMostComplexRecipes(int recipesNumber)
+        {
+            var recipes = await _recipeService.GetMostComplexRecipes(recipesNumber);
+            return Ok(recipes);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<RecipeToReturn>> GetRecipeById(string id)
         {
