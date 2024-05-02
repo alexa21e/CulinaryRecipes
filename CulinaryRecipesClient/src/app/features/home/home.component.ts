@@ -9,6 +9,9 @@ import { Ingredient } from '../../shared/models/ingredient';
 import { IngredientParams } from '../../shared/models/ingredientParams';
 import { ListboxFilterEvent } from 'primeng/listbox';
 import { SortEvent } from 'primeng/api';
+import { AuthorsService } from '../../shared/services/authors.service';
+import { Author } from '../../shared/models/author';
+import { RecipeStats } from '../../shared/models/recipeStats';
 
 @Component({
   selector: 'app-home',
@@ -18,12 +21,18 @@ import { SortEvent } from 'primeng/api';
 export class HomeComponent implements OnInit {
   private recipesSubscription: Subscription = new Subscription();
   private ingredientsSubscription: Subscription = new Subscription();
+  private mostUsedIngredientsSubscription: Subscription = new Subscription();
+  private mostProlificAuthorsSubscription: Subscription = new Subscription();
+  private mostComplecRecipesSubscription: Subscription = new Subscription();
 
   private searchTerm = new Subject<string>();
   searchText: string = '';
 
   recipes: RecipeHome[] = [];
   ingredients: Ingredient[] = [];
+  commonIngredients: Ingredient[] = [];
+  prolificAuthors: Author[] = [];
+  complexRecipes: RecipeStats[] = [];
 
   recipeParams = new RecipeParams();
   ingredientsParams = new IngredientParams();
@@ -39,6 +48,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private recipesService: RecipesService,
     private ingredientsService: IngredientsService,
+    private authorsService: AuthorsService,
     private router: Router) {
   }
 
@@ -50,6 +60,7 @@ export class HomeComponent implements OnInit {
       distinctUntilChanged(),
       switchMap((term: string) => this.ingredientsService.getIngredients({ name: term, pageNumber: 1, pageSize: 200 }))
     ).subscribe(ingredients => this.ingredients = ingredients.data);
+    this.getStats();
   }
 
   getRecipes() {
@@ -110,6 +121,36 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  getStats() {
+    this.mostUsedIngredientsSubscription = this.ingredientsService.getMostCommonIngredients(5).subscribe(
+      {
+        next: (response) => {
+          this.commonIngredients = response;
+          console.log(this.commonIngredients);
+        },
+        error: error => console.log(error)
+      }
+    );
+    this.mostProlificAuthorsSubscription = this.authorsService.getMostProlificAuthors(5).subscribe(
+      {
+        next: (response) => {
+          this.prolificAuthors = response;
+          console.log(this.prolificAuthors);
+        },
+        error: error => console.log(error)
+      }
+    );
+    this.mostComplecRecipesSubscription = this.recipesService.getMostComplexRecipes(5).subscribe(
+      {
+        next: (response) => {
+          this.complexRecipes = response;
+          console.log(this.complexRecipes);
+        },
+        error: error => console.log(error)
+      }
+    );
+  }
+
   onPageChange(event: any) {
     const newPageNumber = event.first / event.rows + 1;
     if (this.recipeParams.pageNumber !== newPageNumber) {
@@ -118,7 +159,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  onRecipeClick(recipe: RecipeHome) {
+  onRecipeClick(recipeId: string) {
+    this.router.navigate(['/recipe', recipeId]);
+  }
+
+  onRecipeHover(recipe: RecipeHome){
     this.router.navigate(['/recipe', recipe.id]);
   }
 
@@ -162,5 +207,6 @@ export class HomeComponent implements OnInit {
   ngOnDestroy(): void {
     this.recipesSubscription.unsubscribe();
     this.ingredientsSubscription.unsubscribe();
+    this.mostProlificAuthorsSubscription.unsubscribe();
   }
 }

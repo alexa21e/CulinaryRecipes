@@ -5,6 +5,7 @@ import { Pagination } from "../models/pagination";
 import { RecipeHome } from "../models/recipeHome";
 import { RecipeDetails } from "../models/recipeDetails";
 import { SimilarRecipe } from "../models/similarRecipe";
+import { RecipeStats } from "../models/recipeStats";
 
 @Injectable({
     providedIn: 'root'
@@ -67,6 +68,12 @@ export class RecipesService {
         params = params.append('sortOrder', recipeParams.sortOrder);
         params = params.append('selectedIngredients', ingredients);
         return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/ingredients`, {params});
+    }
+
+    getMostComplexRecipes(recipesNumber: number){
+        let params = new HttpParams();
+        params = params.append('recipesNumber', recipesNumber);
+        return this.http.get<RecipeStats[]>(this.baseUrl + '/mostComplex', {params});
     }
 
     getRecipe(id: string){
