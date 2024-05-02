@@ -18,7 +18,7 @@ namespace CulinaryRecipesAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Pagination<Ingredient>>> GetIngredients([FromQuery]IngredientParameters param)
+        public async Task<ActionResult<Pagination<Ingredient>>> GetIngredients([FromQuery] IngredientParameters param)
         {
             var ingredients = await _ingredientService.GetIngredients(param);
             var noIngredients = await _ingredientService.GetNumberOfIngredients(param.Name);
@@ -26,7 +26,7 @@ namespace CulinaryRecipesAPI.Controllers
         }
 
         [HttpGet("mostcommon")]
-        public async Task<ActionResult<List<Ingredient>>> GetMostCommonIngredients(int ingredientsNumber)
+        public async Task<ActionResult<List<Ingredient>>> GetMostCommonIngredients([FromQuery] int ingredientsNumber)
         {
             return await _ingredientService.GetMostCommonIngredients(ingredientsNumber);
         }

@@ -6,17 +6,17 @@ namespace CulinaryRecipesAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorController : ControllerBase
+    public class AuthorsController : ControllerBase
     {
         private readonly IAuthorService _authorService;
 
-        public AuthorController(IAuthorService authorService)
+        public AuthorsController(IAuthorService authorService)
         {
             _authorService = authorService;
         }
 
         [HttpGet("mostprolific")]
-        public async Task<ActionResult<List<Author>>> GetMostProlificAuthors(int authorsNumber)
+        public async Task<ActionResult<List<Author>>> GetMostProlificAuthors([FromQuery] int authorsNumber)
         {
             return await _authorService.GetMostProlificAuthors(authorsNumber);
         }
