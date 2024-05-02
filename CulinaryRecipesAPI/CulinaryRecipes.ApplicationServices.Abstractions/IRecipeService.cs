@@ -11,7 +11,7 @@ namespace CulinaryRecipes.ApplicationServices.Abstractions
         Task<List<RecipesToReturn>> GetRecipesByAuthor(string authorName, string clickedRecipeId, RecipeParameters param);
         Task<List<RecipesToReturn>> GetRecipesByAuthorAndName(string authorName, string clickedRecipeId, string recipeName, RecipeParameters param);
         Task<List<RecipesToReturn>> GetRecipesByAuthorAndIngredients(string authorName, string clickedRecipeId, string selectedIngredients,  RecipeParameters param);
-        Task<List<RecipeAsNameToReturn>> GetMostComplexRecipes(int recipesNumber);
+        Task<List<RecipeStatsToReturn>> GetMostComplexRecipes(int recipesNumber);
         Task<int> GetNumberOfRecipes();
         Task<int> GetNumberOfRecipesByName(string name);
         Task<int> GetNumberOfRecipesByIngredients(string[] selectedIngredients);

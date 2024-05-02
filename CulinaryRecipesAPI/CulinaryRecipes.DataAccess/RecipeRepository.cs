@@ -217,7 +217,7 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
         }
 
-        public async Task<List<RecipeAsNameToReturn>> GetMostComplexRecipes(int recipesNumber)
+        public async Task<List<RecipeStatsToReturn>> GetMostComplexRecipes(int recipesNumber)
         {
             var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient)
                            WITH r, COUNT(i) AS IngredientCount
@@ -229,7 +229,11 @@ namespace CulinaryRecipes.DataAccess
 
             var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, null);
 
-            var recipes = records.Select(record => new RecipeAsNameToReturn(){Name = record["Name"].As<string>()}).ToList();
+            var recipes = records.Select(record => new RecipeStatsToReturn()
+            {
+                Id = record["Id"].As<string>(),
+                Name = record["Name"].As<string>()
+            }).ToList();
 
             return recipes;
         }

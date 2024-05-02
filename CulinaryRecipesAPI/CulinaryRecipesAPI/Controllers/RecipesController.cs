@@ -75,7 +75,7 @@ namespace CulinaryRecipesAPI.Controllers
         }
 
         [HttpGet("mostcomplex")]
-        public async Task<ActionResult<List<RecipeAsNameToReturn>>> GetMostComplexRecipes([FromQuery] int recipesNumber)
+        public async Task<ActionResult<List<RecipeStatsToReturn>>> GetMostComplexRecipes([FromQuery] int recipesNumber)
         {
             var recipes = await _recipeService.GetMostComplexRecipes(recipesNumber);
             return Ok(recipes);

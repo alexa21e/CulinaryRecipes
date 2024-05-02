@@ -62,7 +62,7 @@ namespace CulinaryRecipes.ApplicationServices
             return recipes;
         }
 
-        public async Task<List<RecipeAsNameToReturn>> GetMostComplexRecipes(int recipesNumber)
+        public async Task<List<RecipeStatsToReturn>> GetMostComplexRecipes(int recipesNumber)
         {
             return await _recipeRepository.GetMostComplexRecipes(recipesNumber);
         }
