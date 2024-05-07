@@ -15,24 +15,18 @@ namespace CulinaryRecipes.ApplicationServices
 			_recipeRepository = recipeRepository;
 		}
 
-		public async Task<List<RecipesToReturn>> GetRecipes(RecipeParameters param)
-		{
-			var skip = (param.PageNumber - 1) * param.PageSize;
-			return await _recipeRepository.GetRecipes(skip, param.PageSize, param.SortOrder);
-		}
-
-        public async Task<List<RecipesToReturn>> GetRecipesByName(string name, RecipeParameters param)
+        public async Task<List<HomeRecipeToReturn>> GetRecipes(RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
-            return await _recipeRepository.GetRecipesByName(name, skip, param.PageSize, param.SortOrder);
+            return await _recipeRepository.GetRecipes(skip, param.PageSize, param.SortOrder, param.RecipeName, param.SelectedIngredients );
         }
 
-		public async Task<List<RecipesToReturn>> GetRecipesByIngredients(string[] selectedIngredients, RecipeParameters param) {
-            var skip = (param.PageNumber - 1) * param.PageSize;
-            return await _recipeRepository.GetRecipesByIngredients(selectedIngredients, skip, param.PageSize, param.SortOrder);
+        public async Task<int> GetRecipesCount(RecipeParameters param)
+        {
+            return await _recipeRepository.GetRecipesCount(param.RecipeName, param.SelectedIngredients);
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthor(string authorName, string clickedRecipeId,
+        public async Task<List<HomeRecipeToReturn>> GetRecipesByAuthor(string authorName, string clickedRecipeId,
             RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
@@ -41,7 +35,7 @@ namespace CulinaryRecipes.ApplicationServices
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndName(string authorName, string clickedRecipeId, string recipeName,
+        public async Task<List<HomeRecipeToReturn>> GetRecipesByAuthorAndName(string authorName, string clickedRecipeId, string recipeName,
             RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
@@ -51,7 +45,7 @@ namespace CulinaryRecipes.ApplicationServices
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndIngredients(string authorName, string clickedRecipeId,
+        public async Task<List<HomeRecipeToReturn>> GetRecipesByAuthorAndIngredients(string authorName, string clickedRecipeId,
             string selectedIngredients,  RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
@@ -65,21 +59,6 @@ namespace CulinaryRecipes.ApplicationServices
         public async Task<List<RecipeStatsToReturn>> GetMostComplexRecipes(int recipesNumber)
         {
             return await _recipeRepository.GetMostComplexRecipes(recipesNumber);
-        }
-
-		public async Task<int> GetNumberOfRecipes()
-		{
-			return await _recipeRepository.GetNumberOfRecipes();
-		}
-
-        public async Task<int> GetNumberOfRecipesByName(string name)
-        {
-            return await _recipeRepository.GetNumberOfRecipesByName(name);
-        }
-
-        public async Task<int> GetNumberOfRecipesByIngredients(string[] selectedIngredients)
-        {
-            return await _recipeRepository.GetNumberOfRecipesByIngredients(selectedIngredients);
         }
 
         public async Task<int> GetNumberOfRecipesByAuthor(string authorName){
@@ -100,7 +79,7 @@ namespace CulinaryRecipes.ApplicationServices
             return recipesNumber > 0 ? recipesNumber - 1 : 0;
         }
 
-        public async Task<RecipeToReturn> GetRecipeById(string id)
+        public async Task<DetailedRecipeToReturn> GetRecipeById(string id)
         {
             return await _recipeRepository.GetRecipeById(id);
         }

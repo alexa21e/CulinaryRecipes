@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using CulinaryRecipes.DataAccess.Abstractions;
+﻿using CulinaryRecipes.DataAccess.Abstractions;
 using CulinaryRecipes.DataObjects;
 using CulinaryRecipes.Domain;
 using Neo4j.Driver;
+using System;
 
 namespace CulinaryRecipes.DataAccess
 {
@@ -10,62 +10,48 @@ namespace CulinaryRecipes.DataAccess
 	{
 		private readonly INeo4JDataAccess _neo4JDataAccess;
 
-		public RecipeRepository(INeo4JDataAccess neo4jDataAccess)
+		public RecipeRepository(INeo4JDataAccess neo4JDataAccess)
 		{
-			_neo4JDataAccess = neo4jDataAccess;
+			_neo4JDataAccess = neo4JDataAccess;
 		}
 
-		public async Task<List<RecipesToReturn>> GetRecipes(int skip, int pageSize, string sortOrder)
-		{
-            var order = ParseSortOrder(sortOrder);
-
-			var query= $@"MATCH(r: Recipe) - [:CONTAINS_INGREDIENT]->(i: Ingredient), (a: Author) - [:WROTE]->(r)
-				          RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
-				          {order}     
-                          SKIP $skip 
-                          LIMIT $pageSize";
-
-            var parameters = new Dictionary<string, object>
-			{
-				{ "skip", skip },
-				{ "pageSize", pageSize }
-			};
-
-			var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
-
-            var recipes = records.Select(record => new RecipesToReturn
-            {
-                Id = record["Id"].As<string>(),
-                Name = record["Name"].As<string>(),
-                Author = record["Author"].As<string>(),
-                NumberOfIngredients = record["NumberOfIngredients"].As<int>(),
-                SkillLevel = record["SkillLevel"].As<string>()
-            }).ToList();
-
-            return recipes;
-		}
-
-        public async Task<List<RecipesToReturn>> GetRecipesByName(string name, int skip, int pageSize, string sortOrder)
+        public async Task<List<HomeRecipeToReturn>> GetRecipes(int skip, int pageSize, string sortOrder, 
+            string? recipeName, string[]? selectedIngredients)
         {
-            var order = ParseSortOrder(sortOrder);
+            var parameters = new Dictionary<string, object>
+            {
+                { "skip", skip }, 
+                { "pageSize", pageSize }
+            };
+            var nameClause = new List<string>();
+            var matchClauses = new List<string>();
 
-            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r)
-                           WHERE r.name CONTAINS $name
+            if (!string.IsNullOrEmpty(recipeName))
+            {
+                nameClause.Add("WHERE r.name CONTAINS $recipeName");
+                parameters.Add("recipeName", recipeName);
+            }
+
+            if (selectedIngredients is { Length: > 0 })
+            {
+                for (var i = 0; i < selectedIngredients.Length; i++)
+                {
+                    matchClauses.Add($"MATCH (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {{name: $ingredient{i}}})");
+                    parameters.Add($"ingredient{i}", selectedIngredients[i]);
+                }
+            }
+
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) 
+                           {string.Join(" AND ", nameClause)}
+                           {string.Join(" ", matchClauses)}
                            RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
-                           {order}      
+                           {ParseSortOrder(sortOrder)}      
                            SKIP $skip 
                            LIMIT $pageSize";
 
-            var parameters = new Dictionary<string, object>
-            {
-                { "name", name },
-                { "skip", skip },
-                { "pageSize", pageSize }
-            };
-
             var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
 
-            var recipes = records.Select(record => new RecipesToReturn
+            return records.Select(record => new HomeRecipeToReturn
             {
                 Id = record["Id"].As<string>(),
                 Name = record["Name"].As<string>(),
@@ -73,46 +59,38 @@ namespace CulinaryRecipes.DataAccess
                 NumberOfIngredients = record["NumberOfIngredients"].As<int>(),
                 SkillLevel = record["SkillLevel"].As<string>()
             }).ToList();
-
-            return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByIngredients(string[] selectedIngredients, int skip, int pageSize, string sortOrder)
+        public async Task<int> GetRecipesCount(string? recipeName, string[]? selectedIngredients)
         {
-            var order = ParseSortOrder(sortOrder);
+            var parameters = new Dictionary<string, object>();
+            var nameClause = new List<string>();
+            var matchClauses = new List<string>();
 
-            var matchClauses = selectedIngredients.Select((ingredient, index) => 
-                                                $"MATCH (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {{name: $ingredient{index}}})").ToList();
-
-            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) " + string.Join(" ", matchClauses) + 
-                              $" RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel {order} SKIP $skip LIMIT $pageSize";
-
-            var parameters = new Dictionary<string, object>
+            if (!string.IsNullOrEmpty(recipeName))
             {
-                { "skip", skip },
-                { "pageSize", pageSize }
-            };
-
-            for (int i = 0; i < selectedIngredients.Count(); i++)
-            {
-                parameters.Add($"ingredient{i}", selectedIngredients[i]);
+                nameClause.Add("WHERE r.name CONTAINS $recipeName");
+                parameters.Add("recipeName", recipeName);
             }
 
-            var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
-
-            var recipes = records.Select(record => new RecipesToReturn
+            if (selectedIngredients is { Length: > 0 })
             {
-                Id = record["Id"].As<string>(),
-                Name = record["Name"].As<string>(),
-                Author = record["Author"].As<string>(),
-                NumberOfIngredients = record["NumberOfIngredients"].As<int>(),
-                SkillLevel = record["SkillLevel"].As<string>()
-            }).ToList();
+                for (var i = 0; i < selectedIngredients.Length; i++)
+                {
+                    matchClauses.Add($"MATCH (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {{name: $ingredient{i}}})");
+                    parameters.Add($"ingredient{i}", selectedIngredients[i]);
+                }
+            }
 
-            return recipes;
+            var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) 
+                           {string.Join(" AND ", nameClause)}
+                           {string.Join(" ", matchClauses)}
+                           RETURN count(DISTINCT r)";
+
+            return await _neo4JDataAccess.ExecuteReadScalarAsync<int>(query, parameters);
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthor(string authorName, int skip, int pageSize, string sortOrder)
+        public async Task<List<HomeRecipeToReturn>> GetRecipesByAuthor(string authorName, int skip, int pageSize, string sortOrder)
         {
             var order = ParseSortOrder(sortOrder);
 
@@ -132,7 +110,7 @@ namespace CulinaryRecipes.DataAccess
 
             var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
 
-            var recipes = records.Select(record => new RecipesToReturn
+            var recipes = records.Select(record => new HomeRecipeToReturn
             {
                 Id = record["Id"].As<string>(),
                 Name = record["Name"].As<string>(),
@@ -144,7 +122,7 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndName(string authorName, string recipeName, int skip, int pageSize,
+        public async Task<List<HomeRecipeToReturn>> GetRecipesByAuthorAndName(string authorName, string recipeName, int skip, int pageSize,
             string sortOrder)
         {
             var order = ParseSortOrder(sortOrder);
@@ -166,7 +144,7 @@ namespace CulinaryRecipes.DataAccess
 
             var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
 
-            var recipes = records.Select(record => new RecipesToReturn
+            var recipes = records.Select(record => new HomeRecipeToReturn
             {
                 Id = record["Id"].As<string>(),
                 Name = record["Name"].As<string>(),
@@ -178,7 +156,7 @@ namespace CulinaryRecipes.DataAccess
             return recipes;
         }
 
-        public async Task<List<RecipesToReturn>> GetRecipesByAuthorAndIngredients(string authorName,
+        public async Task<List<HomeRecipeToReturn>> GetRecipesByAuthorAndIngredients(string authorName,
             string[] selectedIngredients, int skip, int pageSize, string sortOrder)
         {
             var order = ParseSortOrder(sortOrder);
@@ -205,7 +183,7 @@ namespace CulinaryRecipes.DataAccess
 
             var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);
 
-            var recipes = records.Select(record => new RecipesToReturn
+            var recipes = records.Select(record => new HomeRecipeToReturn
             {
                 Id = record["Id"].As<string>(),
                 Name = record["Name"].As<string>(),
@@ -237,50 +215,6 @@ namespace CulinaryRecipes.DataAccess
 
             return recipes;
         }
-
-        public async Task<int> GetNumberOfRecipes()
-		{
-			const string query = @"MATCH (r:Recipe) RETURN count(r) AS NumberOfRecipes";
-
-			var numberOfRecipes = await _neo4JDataAccess.ExecuteReadScalarAsync<int>(query);
-
-			return numberOfRecipes;
-		}
-
-        public async Task<int> GetNumberOfRecipesByName(string name)
-        {
-            const string query = @"MATCH (r:Recipe) WHERE r.name CONTAINS $name RETURN count(r) AS NumberOfRecipes";
-
-            var parameters = new Dictionary<string, object>
-            {
-                { "name", name }
-            };
-
-            var numberOfRecipes = await _neo4JDataAccess.ExecuteReadScalarAsync<int>(query, parameters);
-
-            return numberOfRecipes;
-        }
-
-        public async Task<int> GetNumberOfRecipesByIngredients(string[] selectedIngredients)
-        {
-            var matchClauses = selectedIngredients.Select((ingredient, index) =>
-                                                               $"MATCH (r)-[:CONTAINS_INGREDIENT]->(:Ingredient {{name: $ingredient{index}}})").ToList();
-
-            var query = @"MATCH (r:Recipe)" + string.Join(" ", matchClauses) +
-                              " RETURN count(r) AS NumberOfRecipes";
-
-            var parameters = new Dictionary<string, object>();
-
-            for (int i = 0; i < selectedIngredients.Count(); i++)
-            {
-                parameters.Add($"ingredient{i}", selectedIngredients[i]);
-            }
-
-            var numberOfRecipes = await _neo4JDataAccess.ExecuteReadScalarAsync<int>(query, parameters);
-
-            return numberOfRecipes;
-        }
-
         public async Task<int> GetNumberOfRecipesByAuthor(string authorName)
         {
             const string query = @"MATCH (r:Recipe), (a:Author)-[:WROTE]->(r)
@@ -338,7 +272,7 @@ namespace CulinaryRecipes.DataAccess
             return numberOfRecipes;
         }
 
-        public async Task<RecipeToReturn> GetRecipeById(string id)
+        public async Task<DetailedRecipeToReturn> GetRecipeById(string id)
         {
             var query = @"MATCH (r:Recipe {id: $id}) - [:CONTAINS_INGREDIENT]->(i: Ingredient)  
                           OPTIONAL MATCH (r) - [:COLLECTION]->(c: Collection)
@@ -370,7 +304,7 @@ namespace CulinaryRecipes.DataAccess
             var keywords = keywordsAsNodes.Select(node => node.Properties["name"].ToString()).ToList();
             var diets = dietAsNode.Select(node => node.Properties["name"].ToString()).ToList(); ;
 
-            var recipe = new RecipeToReturn()
+            var recipe = new DetailedRecipeToReturn()
             {
                 Recipe = Recipe.Create(
                     (string)record["Id"],
