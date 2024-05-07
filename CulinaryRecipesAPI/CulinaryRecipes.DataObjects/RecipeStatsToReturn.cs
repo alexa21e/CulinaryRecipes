@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace CulinaryRecipes.DataObjects
+﻿namespace CulinaryRecipes.DataObjects
 {
     public class RecipeStatsToReturn
     {

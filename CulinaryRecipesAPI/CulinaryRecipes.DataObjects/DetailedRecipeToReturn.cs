@@ -2,7 +2,7 @@
 
 namespace CulinaryRecipes.DataObjects
 {
-	public class RecipeToReturn
+	public class DetailedRecipeToReturn
 	{
 		public Recipe Recipe { get; set; }
 		public List<string>? Ingredients { get; set; }
