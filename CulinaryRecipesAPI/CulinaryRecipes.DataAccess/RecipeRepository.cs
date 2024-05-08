@@ -2,7 +2,6 @@
 using CulinaryRecipes.DataObjects;
 using CulinaryRecipes.Domain;
 using Neo4j.Driver;
-using System;
 
 namespace CulinaryRecipes.DataAccess
 {
@@ -23,12 +22,13 @@ namespace CulinaryRecipes.DataAccess
                 { "skip", skip }, 
                 { "pageSize", pageSize }
             };
-            var nameClause = new List<string>();
+
+            var whereClauses = new List<string>();
             var matchClauses = new List<string>();
 
             if (!string.IsNullOrEmpty(recipeName))
             {
-                nameClause.Add("WHERE r.name CONTAINS $recipeName");
+                whereClauses.Add("WHERE toLower(r.name) CONTAINS toLower($recipeName)");
                 parameters.Add("recipeName", recipeName);
             }
 
@@ -42,7 +42,7 @@ namespace CulinaryRecipes.DataAccess
             }
 
             var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) 
-                           {string.Join(" AND ", nameClause)}
+                           {string.Join(" AND ", whereClauses)}
                            {string.Join(" ", matchClauses)}
                            RETURN r.id AS Id, r.name AS Name, a.name AS Author, count(i) AS NumberOfIngredients, r.skillLevel AS SkillLevel
                            {ParseSortOrder(sortOrder)}      
@@ -64,12 +64,13 @@ namespace CulinaryRecipes.DataAccess
         public async Task<int> GetRecipesCount(string? recipeName, string[]? selectedIngredients)
         {
             var parameters = new Dictionary<string, object>();
-            var nameClause = new List<string>();
+
+            var whereClauses = new List<string>();
             var matchClauses = new List<string>();
 
             if (!string.IsNullOrEmpty(recipeName))
             {
-                nameClause.Add("WHERE r.name CONTAINS $recipeName");
+                whereClauses.Add("WHERE toLower(r.name) CONTAINS toLower($recipeName)");
                 parameters.Add("recipeName", recipeName);
             }
 
@@ -83,7 +84,7 @@ namespace CulinaryRecipes.DataAccess
             }
 
             var query = $@"MATCH (r:Recipe)-[:CONTAINS_INGREDIENT]->(i:Ingredient), (a:Author)-[:WROTE]->(r) 
-                           {string.Join(" AND ", nameClause)}
+                           {string.Join(" AND ", whereClauses)}
                            {string.Join(" ", matchClauses)}
                            RETURN count(DISTINCT r)";
 

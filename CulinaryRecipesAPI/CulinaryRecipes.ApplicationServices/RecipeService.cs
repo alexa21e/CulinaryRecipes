@@ -18,12 +18,22 @@ namespace CulinaryRecipes.ApplicationServices
         public async Task<List<HomeRecipeToReturn>> GetRecipes(RecipeParameters param)
         {
             var skip = (param.PageNumber - 1) * param.PageSize;
-            return await _recipeRepository.GetRecipes(skip, param.PageSize, param.SortOrder, param.RecipeName, param.SelectedIngredients );
+            string[] ingredients = [];
+            if (!string.IsNullOrEmpty(param.SelectedIngredients))
+            {
+                ingredients = param.SelectedIngredients.Split(',');
+            }
+            return await _recipeRepository.GetRecipes(skip, param.PageSize, param.SortOrder, param.RecipeName, ingredients);
         }
 
         public async Task<int> GetRecipesCount(RecipeParameters param)
         {
-            return await _recipeRepository.GetRecipesCount(param.RecipeName, param.SelectedIngredients);
+            string[] ingredients = [];
+            if (!string.IsNullOrEmpty(param.SelectedIngredients))
+            {
+                ingredients = param.SelectedIngredients.Split(',');
+            }
+            return await _recipeRepository.GetRecipesCount(param.RecipeName, ingredients);
         }
 
         public async Task<List<HomeRecipeToReturn>> GetRecipesByAuthor(string authorName, string clickedRecipeId,
