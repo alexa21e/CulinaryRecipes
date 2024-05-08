@@ -25,33 +25,11 @@ namespace CulinaryRecipesAPI.Controllers
             return Ok(new Pagination<HomeRecipeToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
-        [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}")]
-        public async Task<ActionResult<Pagination<HomeRecipeToReturn>>>
-            GetRecipesByAuthor([FromRoute] string authorName, [FromRoute] string clickedRecipeId, [FromQuery] RecipeParameters param)
+        [HttpGet("author")]
+        public async Task<ActionResult<Pagination<HomeRecipeToReturn>>> GetRecipesByAuthor([FromQuery] AuthorRecipeParameters param)
         {
-            var recipes = await _recipeService.GetRecipesByAuthor(authorName, clickedRecipeId, param);
-            var noRecipes = await _recipeService.GetNumberOfRecipesByAuthor(authorName);
-            return Ok(new Pagination<HomeRecipeToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
-        }
-
-        [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}/search/name")]
-        public async Task<ActionResult<Pagination<HomeRecipeToReturn>>>
-            GetRecipesByAuthorAndName([FromRoute] string clickedRecipeId, [FromRoute] string authorName, [FromQuery] string recipeName,
-                [FromQuery] RecipeParameters param)
-        {
-            var recipes = await _recipeService.GetRecipesByAuthorAndName(authorName, clickedRecipeId, recipeName, param);
-            var noRecipes = await _recipeService.GetNumberOfRecipesByAuthorAndName(authorName, recipeName);
-            return Ok(new Pagination<HomeRecipeToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
-        }
-
-        [HttpGet("author/{authorName}/clickedRecipe/{clickedRecipeId}/search/ingredients")]
-
-        public async Task<ActionResult<Pagination<HomeRecipeToReturn>>>
-            GetRecipesByAuthorAndIngredients([FromRoute] string authorName, [FromRoute] string clickedRecipeId, 
-                [FromQuery] string selectedIngredients, [FromQuery] RecipeParameters param)
-        {
-            var recipes = await _recipeService.GetRecipesByAuthorAndIngredients(authorName, clickedRecipeId, selectedIngredients, param);
-            var noRecipes = await _recipeService.GetNumberOfRecipesByAuthorAndIngredients(authorName, selectedIngredients);
+            var recipes = await _recipeService.GetRecipesByAuthor(param);
+            var noRecipes = await _recipeService.GetRecipesByAuthorCount(param);
             return Ok(new Pagination<HomeRecipeToReturn>(param.PageNumber, param.PageSize, noRecipes, param.SortOrder, recipes));
         }
 
