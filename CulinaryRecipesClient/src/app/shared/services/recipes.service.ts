@@ -6,13 +6,14 @@ import { RecipeHome } from "../models/recipeHome";
 import { RecipeDetails } from "../models/recipeDetails";
 import { SimilarRecipe } from "../models/similarRecipe";
 import { RecipeStats } from "../models/recipeStats";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class RecipesService {
-    baseUrl = 'https://localhost:5001/api/Recipes'
+    baseUrl = environment.baseUrl + '/api';
     
     constructor(private http: HttpClient) {
     }
@@ -22,7 +23,7 @@ export class RecipesService {
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
         params = params.append('sortOrder', recipeParams.sortOrder);
-        return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl, {params});
+        return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl + '/Recipes', {params});
     }
 
     getRecipesByName(name: string, recipeParams: RecipeParams){
@@ -31,7 +32,7 @@ export class RecipesService {
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
         params = params.append('sortOrder', recipeParams.sortOrder);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/search/name`, {params});
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/Recipes/search/name`, {params});
     }
 
     getRecipesByIngredients(ingredients: string[], recipeParams: RecipeParams){
@@ -41,7 +42,7 @@ export class RecipesService {
         params = params.append('sortOrder', recipeParams.sortOrder);
         const formattedIngredients = ingredients.join(',');
         params = params.append('selectedIngredients', formattedIngredients);
-        return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl + '/search/ingredients' , {params});
+        return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl + '/Recipes/search/ingredients' , {params});
     }
 
     getRecipesByAuthor(authorName: string, clickedRecipeId: string, recipeParams: RecipeParams){
@@ -49,7 +50,7 @@ export class RecipesService {
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
         params = params.append('sortOrder', recipeParams.sortOrder);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}`, {params});
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/Recipes/author/${authorName}/clickedRecipe/${clickedRecipeId}`, {params});
     }
 
     getRecipesByAuthorAndName(authorName: string, clickedRecipeId: string, recipeName: string, recipeParams: RecipeParams){
@@ -58,7 +59,7 @@ export class RecipesService {
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
         params = params.append('sortOrder', recipeParams.sortOrder);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/name`, {params});
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/Recipes/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/name`, {params});
     }
 
     getRecipesByAuthorAndIngredients(authorName: string, clickedRecipeId: string, ingredients: string, recipeParams: RecipeParams){
@@ -67,20 +68,20 @@ export class RecipesService {
         params = params.append('pageSize', recipeParams.pageSize);
         params = params.append('sortOrder', recipeParams.sortOrder);
         params = params.append('selectedIngredients', ingredients);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/ingredients`, {params});
+        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/Recipes/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/ingredients`, {params});
     }
 
     getMostComplexRecipes(recipesNumber: number){
         let params = new HttpParams();
         params = params.append('recipesNumber', recipesNumber);
-        return this.http.get<RecipeStats[]>(this.baseUrl + '/mostComplex', {params});
+        return this.http.get<RecipeStats[]>(this.baseUrl + '/Recipes/mostComplex', {params});
     }
 
     getRecipe(id: string){
-        return this.http.get<RecipeDetails>(this.baseUrl + '/' + id);
+        return this.http.get<RecipeDetails>(this.baseUrl + '/Recipes/' + id);
     }
 
     getFiveMostSimilarRecipes(id: string){
-        return this.http.get<SimilarRecipe[]>(this.baseUrl + '/' + id + '/similar');
+        return this.http.get<SimilarRecipe[]>(this.baseUrl + '/Recipes/' + id + '/similar');
     }
 }
