@@ -53,5 +53,12 @@ namespace CulinaryRecipesAPI.Controllers
             var recipes = await _recipeService.GetFiveMostSimilarRecipes(id);
             return Ok(recipes);
         }
+
+        [HttpGet("{id}/name")]
+        public async Task<ActionResult<RecipeNameToReturn>> GetRecipeNameById([FromRoute] string id)
+        {
+            var recipe = await _recipeService.GetRecipeNameById(id);
+            return Ok(recipe);
+        }
 	}
 }

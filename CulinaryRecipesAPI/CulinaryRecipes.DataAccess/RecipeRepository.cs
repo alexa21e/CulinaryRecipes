@@ -1,4 +1,5 @@
-﻿using CulinaryRecipes.DataAccess.Abstractions;
+﻿using System.Runtime.InteropServices;
+using CulinaryRecipes.DataAccess.Abstractions;
 using CulinaryRecipes.DataObjects;
 using CulinaryRecipes.Domain;
 using Neo4j.Driver;
@@ -287,6 +288,31 @@ namespace CulinaryRecipes.DataAccess
             }).ToList();
 
             return similarRecipes;
+        }
+
+        public async Task<RecipeNameToReturn> GetRecipeNameById(string id)
+        {
+            var query = @"MATCH (r:Recipe {id: $id})
+                          RETURN r.name AS Name";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "id", id }
+            };
+
+            var record = await _neo4JDataAccess.ExecuteReadSingleRecordAsync(query, parameters);
+
+            if (record.Count == 0)
+            {
+                return null;
+            }
+
+            var recipe = new RecipeNameToReturn()
+            {
+                Name = ((string)record["Name"])
+            };
+
+            return recipe;
         }
 
         private static string ParseSortOrder(string sortOrder)

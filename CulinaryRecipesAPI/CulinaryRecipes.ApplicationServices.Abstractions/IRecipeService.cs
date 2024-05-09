@@ -12,5 +12,6 @@ namespace CulinaryRecipes.ApplicationServices.Abstractions
         Task<List<RecipeStatsToReturn>> GetMostComplexRecipes(int recipesNumber);
         Task<DetailedRecipeToReturn> GetRecipeById(string id);
         Task<List<SimilarRecipeToReturn>> GetFiveMostSimilarRecipes(string id);
+        Task<RecipeNameToReturn> GetRecipeNameById(string id);
     }
 }
