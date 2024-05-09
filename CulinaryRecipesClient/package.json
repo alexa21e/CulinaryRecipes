@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href=https://github.com/alexa21e/CulinaryRecipes/",
+    "build": "ng build --base-href=https://alexa21e.github.io/CulinaryRecipes/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
