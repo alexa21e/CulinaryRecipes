@@ -23,7 +23,7 @@
             <div *ngIf="ingredients" class="flex flex-column ingredients gap-2 align-items-center">
                 <p-listbox [options]="ingredients" [(ngModel)]="selectedIngredients" optionLabel="name"
                     [style]="{ width: '100%', 'max-height': '320px' }" [virtualScroll]="true" [filter]="true"
-                    [virtualScrollItemSize]="90" [multiple]="true" [checkbox]="true" [showToggleAll]="false"
+                    [virtualScrollItemSize]="55" [multiple]="true" [checkbox]="true" [showToggleAll]="false"
                     [metaKeySelection]="false" (onChange)="onIngredientsChange($event)"
                     (onFilter)="onIngredientsSearch($event)" aria-describedby="filter">
                 </p-listbox>
@@ -76,10 +76,10 @@
                         <ng-template pTemplate="body" let-recipe>
                             <tr class="clickable-row" (click)="onRecipeHover(recipe)">
                                 <td>{{recipe.name}}</td>
-                                <td><a (click)="onAuthorClickFromTable($event, recipe.author, recipe.id)">{{recipe.author}}</a>
+                                <td style="text-align: center"><a (click)="onAuthorClickFromTable($event, recipe.author, recipe.id)">{{recipe.author}}</a>
                                 </td>
-                                <td>{{recipe.numberOfIngredients}}</td>
-                                <td>{{recipe.skillLevel}}</td>
+                                <td style="text-align: center">{{recipe.numberOfIngredients}}</td>
+                                <td style="text-align: center">{{recipe.skillLevel}}</td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="summary">

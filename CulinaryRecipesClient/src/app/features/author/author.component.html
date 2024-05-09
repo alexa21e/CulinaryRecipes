@@ -10,7 +10,7 @@
     <div class="header flex justify-content-between flex-wrap">
         <div class="flex align-items-center justify-content-center title">
             <div *ngIf="clickedRecipe && clickedRecipeId">
-                <h1>Recipes of {{authorName}} without </h1>
+                <h1>Recipes of {{authorName}}</h1>
                 <p>also view <a [routerLink]="['/recipe', clickedRecipeId]">{{clickedRecipe.name}}</a></p>
             </div>
             <h1 *ngIf="!clickedRecipe">Recipes of {{authorName}}</h1>
@@ -27,7 +27,7 @@
             *ngIf="ingredients">
         <p-listbox [options]="ingredients" [(ngModel)]="selectedIngredients" optionLabel="name"
             [style]="{ width: '100%', 'max-height': '320px' }" [virtualScroll]="true" 
-            [filter]="true" [virtualScrollItemSize]="90" [multiple]="true" [checkbox]="true" 
+            [filter]="true" [virtualScrollItemSize]="55" [multiple]="true" [checkbox]="true" 
             [showToggleAll]="false" [metaKeySelection]="false" (onChange)="onIngredientsChange($event)" 
             (onFilter)="onIngredientsSearch($event)" aria-describedby="filter">
         </p-listbox>
@@ -54,9 +54,9 @@
                     <ng-template pTemplate="body" let-recipe>
                         <tr class="clickable-row" (click)="onRecipeClick(recipe)">
                             <td>{{recipe.name}}</td>
-                            <td>{{recipe.author}}</td>
-                            <td>{{recipe.numberOfIngredients}}</td>
-                            <td>{{recipe.skillLevel}}</td>
+                            <td style="text-align: center">{{recipe.author}}</td>
+                            <td style="text-align: center">{{recipe.numberOfIngredients}}</td>
+                            <td style="text-align: center">{{recipe.skillLevel}}</td>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="summary">
