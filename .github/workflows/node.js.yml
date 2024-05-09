@@ -26,7 +26,7 @@ jobs:
         working-directory: ${{env.working-directory}}
         
       - name: Build
-        run: npm run build:prod
+        run: npm run build
         working-directory: ${{env.working-directory}}
 
       - name: Deploy to GitHub Pages
