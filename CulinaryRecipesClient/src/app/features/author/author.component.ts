@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ListboxFilterEvent } from 'primeng/listbox';
 import { SortEvent } from 'primeng/api';
 import { AuthorRecipeParams } from '../../shared/models/authorRecipeParams';
-import { Recipe } from '../../shared/models/recipe';
+import { RecipeName } from '../../shared/models/recipeName';
 
 @Component({
   selector: 'app-author',
@@ -20,14 +20,14 @@ export class AuthorComponent implements OnInit {
   private recipesSubscription: Subscription = new Subscription();
   private ingredientsSubscription: Subscription = new Subscription();
   private clickedRecipeSubscription: Subscription = new Subscription();
- 
+
   private ingredientSearchTerm = new Subject<string>();
   private recipeSearchTerm = new Subject<string>();
   searchText: string = '';
 
   recipes: HomeRecipe[] = [];
   ingredients: Ingredient[] = [];
-  clickedRecipe?: Recipe;
+  clickedRecipe?: RecipeName;
 
   recipeParams = new AuthorRecipeParams();
   ingredientsParams = new IngredientParams();
@@ -38,8 +38,9 @@ export class AuthorComponent implements OnInit {
   selectedIngredients!: any[];
   selectAll: any;
 
-  authorName!: string;
-  clickedRecipeId!: string;
+  authorName: string = '';
+  clickedRecipeState: boolean = false;
+  clickedRecipeId?: string;
 
   selectedSortOption: string = '_asc';
 
@@ -57,7 +58,11 @@ export class AuthorComponent implements OnInit {
     if (authorName) this.authorName = authorName;
 
     let clickedRecipeId = this.route.snapshot.paramMap.get('id');
-    if (clickedRecipeId) this.clickedRecipeId = clickedRecipeId;
+    if (clickedRecipeId) {
+      this.clickedRecipeId = clickedRecipeId;
+      this.clickedRecipeState = true;
+      this.getClickedRecipe();
+    }
 
     this.getRecipesByAuthor();
     this.getIngredients();
@@ -85,26 +90,27 @@ export class AuthorComponent implements OnInit {
         error: error => console.log(error)
       }
     );
-    this.getClickedRecipe();
   }
 
   getRecipesByAuthor() {
     this.recipeParams.sortOrder = this.selectedSortOption;
-    if (this.authorName) {
-      this.recipeParams.authorName = this.authorName;
-      this.recipesSubscription = this.recipesService.getRecipesByAuthor(this.recipeParams).subscribe(
-        {
-          next: (response) => {
-            this.recipes = response.data;
-            this.recipeParams.pageNumber = response.pageNumber;
-            this.recipeParams.pageSize = response.pageSize;
-            this.recipesCount = response.count;
-            this.isLoading = false;
-          },
-          error: error => console.log(error)
-        }
-      );
+    this.recipeParams.authorName = this.authorName;
+    if(this.clickedRecipeId){
+      this.recipeParams.clickedRecipe = this.clickedRecipeState;
+      this.recipeParams.clickedRecipeId = this.clickedRecipeId;
     }
+    this.recipesSubscription = this.recipesService.getRecipesByAuthor(this.recipeParams).subscribe(
+      {
+        next: (response) => {
+          this.recipes = response.data;
+          this.recipeParams.pageNumber = response.pageNumber;
+          this.recipeParams.pageSize = response.pageSize;
+          this.recipesCount = response.count;
+          this.isLoading = false;
+        },
+        error: error => console.log(error)
+      }
+    );
   }
 
   getIngredients() {
@@ -121,7 +127,16 @@ export class AuthorComponent implements OnInit {
   }
 
   getClickedRecipe() {
-    //to be implemented
+    if (this.clickedRecipeId) {
+      this.clickedRecipeSubscription = this.recipesService.getRecipeNameById(this.clickedRecipeId).subscribe(
+        {
+          next: (response) => {
+            this.clickedRecipe = response;
+          },
+          error: error => console.log(error)
+        }
+      );
+    }
   }
 
   onPageChange(event: any) {
@@ -134,6 +149,10 @@ export class AuthorComponent implements OnInit {
 
   onRecipeClick(recipe: HomeRecipe) {
     this.router.navigate(['/recipe', recipe.id]);
+  }
+
+  onRecipeHover(id: string) {
+    this.router.navigate(['/recipe', id]);
   }
 
   onIngredientsChange(event: any) {

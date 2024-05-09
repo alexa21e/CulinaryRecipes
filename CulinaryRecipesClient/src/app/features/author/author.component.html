@@ -9,7 +9,11 @@
 <ng-template #content>
     <div class="header flex justify-content-between flex-wrap">
         <div class="flex align-items-center justify-content-center title">
-            <h1>Recipes of {{authorName}}</h1>
+            <div *ngIf="clickedRecipe && clickedRecipeId">
+                <h1>Recipes of {{authorName}} without </h1>
+                <p>also view <a [routerLink]="['/recipe', clickedRecipeId]">{{clickedRecipe.name}}</a></p>
+            </div>
+            <h1 *ngIf="!clickedRecipe">Recipes of {{authorName}}</h1>
         </div>
         <div class="flex align-items-center justify-content-center search">
             <span class="flex flex-column align-items-center gap-2">

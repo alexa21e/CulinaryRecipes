@@ -42,7 +42,9 @@
             <div *ngIf="prolificAuthors" class="mt-2">
                 <p-card>
                     <h3>Most prolific authors</h3>
-                    <li *ngFor="let author of prolificAuthors">{{author.name}}</li>
+                    <div *ngFor="let author of prolificAuthors" class="stats-authors">
+                        <a (click)="onAuthorClickFromStats(author.name)">{{author.name}}</a>
+                    </div>
                 </p-card>
             </div>
             <div *ngIf="complexRecipes" class="mt-2">
@@ -74,7 +76,7 @@
                         <ng-template pTemplate="body" let-recipe>
                             <tr class="clickable-row" (click)="onRecipeHover(recipe)">
                                 <td>{{recipe.name}}</td>
-                                <td><a (click)="onAuthorClick($event, recipe.author, recipe.id)">{{recipe.author}}</a>
+                                <td><a (click)="onAuthorClickFromTable($event, recipe.author, recipe.id)">{{recipe.author}}</a>
                                 </td>
                                 <td>{{recipe.numberOfIngredients}}</td>
                                 <td>{{recipe.skillLevel}}</td>

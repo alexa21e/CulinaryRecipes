@@ -64,6 +64,12 @@ h3, li{
     margin: 1.8%;
 }
 
+.stats-authors{
+    color:#5e958b;
+    cursor: pointer;
+    margin: 1.8%;
+}
+
 .loading{
     margin: 15%;
 }

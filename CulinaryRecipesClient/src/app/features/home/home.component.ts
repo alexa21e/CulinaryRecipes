@@ -161,9 +161,13 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/recipe', recipe.id]);
   }
 
-  onAuthorClick(event: Event, authorName: string, clickedRecipeId: string) {
+  onAuthorClickFromTable(event: Event, authorName: string, clickedRecipeId: string) {
     event.stopPropagation();
     this.router.navigate(['/author', authorName, 'id', clickedRecipeId]);
+  }
+
+  onAuthorClickFromStats(authorName: string){
+    this.router.navigate(['/author', authorName]);
   }
 
   onIngredientsChange(event: any) {
