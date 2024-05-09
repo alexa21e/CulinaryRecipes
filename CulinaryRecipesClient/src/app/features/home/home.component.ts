@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit {
     this.ingredientSearchTerm.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((term: string) => this.ingredientsService.getIngredients({ name: term, pageNumber: 1, pageSize: 200 }))
+      switchMap((term: string) => this.ingredientsService.getIngredients({ name: term, ingredientsDisplayedNo: 200 }))
     ).subscribe(ingredients => this.ingredients = ingredients.data);
     this.recipeSearchTerm.pipe(
       debounceTime(300),
@@ -109,8 +109,7 @@ export class HomeComponent implements OnInit {
       {
         next: (response) => {
           this.ingredients = response.data;
-          this.ingredientsParams.pageNumber = response.pageNumber;
-          this.ingredientsParams.pageSize = response.pageSize;
+          this.ingredientsParams.ingredientsDisplayedNo = response.ingredientsDisplayedNo;
         },
         error: error => console.log(error)
       }
