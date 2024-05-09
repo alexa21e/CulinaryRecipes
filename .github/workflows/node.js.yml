@@ -5,13 +5,13 @@ on:
     branches: 
       - main
     paths:
-      - 'CulinaryRecipes/**'
+      - 'CulinaryRecipesClient/**'
       
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      working-directory: ./CulinaryRecipes
+      working-directory: ./CulinaryRecipesClient
     steps:
       - name: Checkout
         uses: actions/checkout@v4
