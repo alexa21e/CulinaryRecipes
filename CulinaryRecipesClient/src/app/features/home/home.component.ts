@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RecipesService } from '../../shared/services/recipes.service';
 import { RecipeParams } from '../../shared/models/recipeParams';
-import { RecipeHome } from '../../shared/models/recipeHome';
+import { HomeRecipe } from '../../shared/models/homeRecipe';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, Subscription, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { IngredientsService } from '../../shared/services/ingredients.service';
@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   private recipeSearchTerm = new Subject<string>();
   searchText: string = '';
 
-  recipes: RecipeHome[] = [];
+  recipes: HomeRecipe[] = [];
   ingredients: Ingredient[] = [];
   commonIngredients: Ingredient[] = [];
   prolificAuthors: Author[] = [];
@@ -53,11 +53,6 @@ export class HomeComponent implements OnInit {
     private ingredientsService: IngredientsService,
     private authorsService: AuthorsService,
     private router: Router) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.getRecipes();
-      }
-    });
   }
 
   ngOnInit(): void {
@@ -162,7 +157,7 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/recipe', recipeId]);
   }
 
-  onRecipeHover(recipe: RecipeHome) {
+  onRecipeHover(recipe: HomeRecipe) {
     this.router.navigate(['/recipe', recipe.id]);
   }
 

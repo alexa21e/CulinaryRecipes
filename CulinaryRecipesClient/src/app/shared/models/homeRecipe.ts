@@ -1,4 +1,4 @@
-export interface RecipeHome {
+export interface HomeRecipe {
     id: string;
     name: string;
     author: string;

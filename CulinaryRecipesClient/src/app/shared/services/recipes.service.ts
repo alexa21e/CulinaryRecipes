@@ -2,11 +2,12 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { RecipeParams } from "../models/recipeParams";
 import { Pagination } from "../models/pagination";
-import { RecipeHome } from "../models/recipeHome";
-import { RecipeDetails } from "../models/recipeDetails";
+import { HomeRecipe } from "../models/homeRecipe";
+import { DetailedRecipe } from "../models/detailedRecipe";
 import { SimilarRecipe } from "../models/similarRecipe";
 import { RecipeStats } from "../models/recipeStats";
 import { environment } from "../../../environments/environment";
+import { AuthorRecipeParams } from "../models/authorRecipeParams";
 
 @Injectable({
     providedIn: 'root'
@@ -29,33 +30,26 @@ export class RecipesService {
         if(recipeParams.selectedIngredients){
             params = params.append('selectedIngredients', recipeParams.selectedIngredients);
         }
-        return this.http.get<Pagination<RecipeHome[]>>(this.baseUrl + '/Recipes', {params});
+        return this.http.get<Pagination<HomeRecipe[]>>(this.baseUrl + '/Recipes', {params});
     }
 
-    getRecipesByAuthor(authorName: string, clickedRecipeId: string, recipeParams: RecipeParams){
+    getRecipesByAuthor(recipeParams: AuthorRecipeParams){
         let params = new HttpParams();
         params = params.append('pageNumber', recipeParams.pageNumber);
         params = params.append('pageSize', recipeParams.pageSize);
         params = params.append('sortOrder', recipeParams.sortOrder);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/Recipes/author/${authorName}/clickedRecipe/${clickedRecipeId}`, {params});
-    }
-
-    getRecipesByAuthorAndName(authorName: string, clickedRecipeId: string, recipeName: string, recipeParams: RecipeParams){
-        let params = new HttpParams();
-        params = params.append('recipeName', recipeName);
-        params = params.append('pageNumber', recipeParams.pageNumber);
-        params = params.append('pageSize', recipeParams.pageSize);
-        params = params.append('sortOrder', recipeParams.sortOrder);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/Recipes/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/name`, {params});
-    }
-
-    getRecipesByAuthorAndIngredients(authorName: string, clickedRecipeId: string, ingredients: string, recipeParams: RecipeParams){
-        let params = new HttpParams();
-        params = params.append('pageNumber', recipeParams.pageNumber);
-        params = params.append('pageSize', recipeParams.pageSize);
-        params = params.append('sortOrder', recipeParams.sortOrder);
-        params = params.append('selectedIngredients', ingredients);
-        return this.http.get<Pagination<RecipeHome[]>>(`${this.baseUrl}/Recipes/author/${authorName}/clickedRecipe/${clickedRecipeId}/search/ingredients`, {params});
+        params = params.append('authorName', recipeParams.authorName);
+        if(recipeParams.clickedRecipe && recipeParams.clickedRecipeId){
+            params = params.append('clickedRecipe', recipeParams.clickedRecipe);
+            params = params.append('clickedRecipeId', recipeParams.clickedRecipeId);
+        }
+        if(recipeParams.recipeName){
+            params = params.append('recipeName', recipeParams.recipeName);
+        }
+        if(recipeParams.selectedIngredients){
+            params = params.append('selectedIngredients', recipeParams.selectedIngredients);
+        }
+        return this.http.get<Pagination<HomeRecipe[]>>(this.baseUrl + '/Recipes/author', {params});
     }
 
     getMostComplexRecipes(recipesNumber: number){
@@ -65,7 +59,7 @@ export class RecipesService {
     }
 
     getRecipe(id: string){
-        return this.http.get<RecipeDetails>(this.baseUrl + '/Recipes/' + id);
+        return this.http.get<DetailedRecipe>(this.baseUrl + '/Recipes/' + id);
     }
 
     getFiveMostSimilarRecipes(id: string){

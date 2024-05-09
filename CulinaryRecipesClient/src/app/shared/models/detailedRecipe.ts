@@ -1,6 +1,6 @@
 import { Recipe } from "./recipe";
 
-export interface RecipeDetails{
+export interface DetailedRecipe{
     recipe: Recipe;
     ingredients: string[];
     collections: string[];
