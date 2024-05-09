@@ -1,0 +1,39 @@
+name: CI / CD for Angular
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - 'CulinaryRecipes/**'
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./CulinaryRecipes
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+    
+      - name: Set up node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '${{env.working-directory}}/package-lock.json'
+          
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ${{env.working-directory}}
+        
+      - name: Build
+        run: npm run build:prod
+        working-directory: ${{env.working-directory}}
+
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: gh-pages
+          build_dir: ${{env.working-directory}}/dist/culinary-recipes-client
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
