@@ -33,6 +33,6 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v3
         with:
           target_branch: gh-pages
-          build_dir: ${{env.working-directory}}/dist/culinary-recipes-client
+          build_dir: ${{env.working-directory}}/dist/culinary-recipes-client/browser
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
