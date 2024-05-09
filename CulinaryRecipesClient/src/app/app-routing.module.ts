@@ -7,6 +7,7 @@ import { AuthorComponent } from './features/author/author.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'author/:name/id/:id', component: AuthorComponent },
+  { path: 'author/:name', component: AuthorComponent},
   { path: 'recipe/:id', component: RecipeComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

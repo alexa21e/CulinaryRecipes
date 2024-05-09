@@ -16,8 +16,7 @@ namespace CulinaryRecipes.ApplicationServices
 
         public async Task<List<Ingredient>> GetIngredients(IngredientParameters param)
         {
-            var skip = (param.PageNumber - 1) * param.PageSize;
-            return await _ingredientRepository.GetIngredients(param.Name, skip, param.PageSize);
+            return await _ingredientRepository.GetIngredients(param.Name, param.IngredientsDisplayedNo);
         }
 
         public async Task<List<Ingredient>> GetMostCommonIngredients(int ingredientsNumber)

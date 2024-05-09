@@ -22,7 +22,7 @@ namespace CulinaryRecipesAPI.Controllers
         {
             var ingredients = await _ingredientService.GetIngredients(param);
             var noIngredients = await _ingredientService.GetNumberOfIngredients(param.Name);
-            return Ok(new Pagination<Ingredient>(param.PageNumber, param.PageSize, noIngredients, "_asc", ingredients));
+            return Ok(new Listing<Ingredient>(param.IngredientsDisplayedNo, noIngredients, ingredients));
         }
 
         [HttpGet("mostcommon")]

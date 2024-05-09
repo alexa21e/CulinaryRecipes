@@ -13,19 +13,17 @@ namespace CulinaryRecipes.DataAccess
             _neo4JDataAccess = neo4jDataAccess;
         }
 
-        public async Task<List<Ingredient>> GetIngredients(string name, int skip, int pageSize)
+        public async Task<List<Ingredient>> GetIngredients(string name, int ingredientsDisplayedNo)
         {
             var query = @"MATCH (i:Ingredient) WHERE toLower(i.name) CONTAINS $name 
                                  RETURN i.name AS Name
                                  ORDER BY i.name 
-                                 SKIP $skip 
-                                 LIMIT $pageSize";
+                                 LIMIT $ingredientsDisplayedNo";
 
             var parameters = new Dictionary<string, object>
             {
                 { "name", name },
-                { "skip", skip },
-                { "pageSize", pageSize }
+                { "ingredientsDisplayedNo", ingredientsDisplayedNo }
             };
 
             var records = await _neo4JDataAccess.ExecuteReadPropertiesAsync(query, parameters);

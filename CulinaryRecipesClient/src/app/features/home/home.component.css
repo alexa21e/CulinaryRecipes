@@ -1,5 +1,5 @@
 .title{
-    margin-left: 4%;
+    margin-left: 3%;
     color:#0b5345;
 }
 
@@ -20,8 +20,7 @@
 
 .search {
     color: #0b5345;
-    display: flex;
-    align-items: center; 
+    margin-right: 3%;
 }
 
 .func {
@@ -55,10 +54,24 @@
     margin-right:1%;
 }
 
+h3, li{
+    margin-left: 2%;
+}
+
 .stats-recipes{
     color:#5e958b;
     cursor: pointer;
-    margin: 1%;
+    margin: 1.8%;
+}
+
+.stats-authors{
+    color:#5e958b;
+    cursor: pointer;
+    margin: 1.8%;
+}
+
+.loading{
+    margin: 15%;
 }
 
 ::ng-deep .p-button {
@@ -89,3 +102,8 @@
 :host ::ng-deep .p-datatable .p-datatable-footer {
     color: #0b5345;
 }
+
+:host ::ng-deep .p-progress-spinner-circle {
+    stroke: #0B5345 !important;
+    background-color: #0B5345 !important;
+ }

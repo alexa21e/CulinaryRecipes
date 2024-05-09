@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RecipeDetails } from '../../shared/models/recipeDetails';
+import { DetailedRecipe } from '../../shared/models/detailedRecipe';
 import { RecipesService } from '../../shared/services/recipes.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -14,7 +14,7 @@ export class RecipeComponent implements OnInit {
   private recipeSubscription: Subscription = new Subscription();
   private similarRecipesSubscription: Subscription = new Subscription();
 
-  recipeDetails!: RecipeDetails;
+  recipeDetails!: DetailedRecipe;
   similarRecipes: SimilarRecipe[] = [];
 
   isLoading = true;

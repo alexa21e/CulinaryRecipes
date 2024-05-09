@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Author } from "../models/author";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class AuthorsService {
-    baseUrl = 'https://localhost:5001/api/Authors'
+    baseUrl = environment.baseUrl + '/api';
     
     constructor(private http: HttpClient) {
     }
@@ -15,6 +16,6 @@ export class AuthorsService {
     getMostProlificAuthors(authorsNumber: number){
         let params = new HttpParams();
         params = params.append('authorsNumber', authorsNumber);
-        return this.http.get<Author[]>(this.baseUrl + '/mostProlific', {params});
+        return this.http.get<Author[]>(this.baseUrl + '/Authors/mostProlific', {params});
     }
 }

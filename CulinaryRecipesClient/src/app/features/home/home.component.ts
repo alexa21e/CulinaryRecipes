@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RecipesService } from '../../shared/services/recipes.service';
 import { RecipeParams } from '../../shared/models/recipeParams';
-import { RecipeHome } from '../../shared/models/recipeHome';
-import { Router } from '@angular/router';
+import { HomeRecipe } from '../../shared/models/homeRecipe';
+import { NavigationEnd, Router } from '@angular/router';
 import { Subject, Subscription, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { IngredientsService } from '../../shared/services/ingredients.service';
 import { Ingredient } from '../../shared/models/ingredient';
@@ -23,12 +23,13 @@ export class HomeComponent implements OnInit {
   private ingredientsSubscription: Subscription = new Subscription();
   private mostUsedIngredientsSubscription: Subscription = new Subscription();
   private mostProlificAuthorsSubscription: Subscription = new Subscription();
-  private mostComplecRecipesSubscription: Subscription = new Subscription();
+  private mostComplexRecipesSubscription: Subscription = new Subscription();
 
-  private searchTerm = new Subject<string>();
+  private ingredientSearchTerm = new Subject<string>();
+  private recipeSearchTerm = new Subject<string>();
   searchText: string = '';
 
-  recipes: RecipeHome[] = [];
+  recipes: HomeRecipe[] = [];
   ingredients: Ingredient[] = [];
   commonIngredients: Ingredient[] = [];
   prolificAuthors: Author[] = [];
@@ -43,7 +44,9 @@ export class HomeComponent implements OnInit {
   selectedIngredients!: any[];
   selectAll: any;
 
-  selectedSortOption: string = '_asc'; 
+  selectedSortOption: string = '_asc';
+
+  isLoading = true;
 
   constructor(
     private recipesService: RecipesService,
@@ -55,53 +58,46 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.getRecipes();
     this.getIngredients();
-    this.searchTerm.pipe(
+    this.ingredientSearchTerm.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((term: string) => this.ingredientsService.getIngredients({ name: term, pageNumber: 1, pageSize: 200 }))
+      switchMap((term: string) => this.ingredientsService.getIngredients({ name: term, ingredientsDisplayedNo: 200 }))
     ).subscribe(ingredients => this.ingredients = ingredients.data);
+    this.recipeSearchTerm.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        this.searchText = term;
+        return this.recipesService.getRecipes(this.recipeParams);
+      })
+    ).subscribe(
+      {
+        next: (response) => {
+          this.recipes = response.data;
+          this.recipeParams.pageNumber = response.pageNumber;
+          this.recipeParams.pageSize = response.pageSize;
+          this.recipesCount = response.count;
+          this.isLoading = false;
+        },
+        error: error => console.log(error)
+      }
+    );
     this.getStats();
   }
 
   getRecipes() {
     this.recipeParams.sortOrder = this.selectedSortOption;
+    if (this.searchText) {
+      this.recipeParams.recipeName = this.searchText;
+    }
     this.recipesSubscription = this.recipesService.getRecipes(this.recipeParams).subscribe(
       {
         next: (response) => {
           this.recipes = response.data;
           this.recipeParams.pageNumber = response.pageNumber;
           this.recipeParams.pageSize = response.pageSize;
-          this.recipeParams.sortOrder = response.sortOrder;
           this.recipesCount = response.count;
-        },
-        error: error => console.log(error)
-      }
-    );
-  }
-
-  getRecipesByName() {
-    this.recipesSubscription = this.recipesService.getRecipesByName(this.searchText, this.recipeParams).subscribe(
-      {
-        next: (response) => {
-          this.recipes = response.data;
-          this.recipeParams.pageNumber = response.pageNumber;
-          this.recipeParams.pageSize = response.pageSize;
-          this.recipesCount = response.count;
-        },
-        error: error => console.log(error)
-      }
-    );
-  }
-
-  getRecipesByIngredients() {
-    const ingredients = this.selectedIngredients.map(i => i.name);
-    this.recipesSubscription = this.recipesService.getRecipesByIngredients(ingredients, this.recipeParams).subscribe(
-      {
-        next: (response) => {
-          this.recipes = response.data;
-          this.recipeParams.pageNumber = response.pageNumber;
-          this.recipeParams.pageSize = response.pageSize;
-          this.recipesCount = response.count;
+          this.isLoading = false;
         },
         error: error => console.log(error)
       }
@@ -113,8 +109,7 @@ export class HomeComponent implements OnInit {
       {
         next: (response) => {
           this.ingredients = response.data;
-          this.ingredientsParams.pageNumber = response.pageNumber;
-          this.ingredientsParams.pageSize = response.pageSize;
+          this.ingredientsParams.ingredientsDisplayedNo = response.ingredientsDisplayedNo;
         },
         error: error => console.log(error)
       }
@@ -126,7 +121,6 @@ export class HomeComponent implements OnInit {
       {
         next: (response) => {
           this.commonIngredients = response;
-          console.log(this.commonIngredients);
         },
         error: error => console.log(error)
       }
@@ -135,12 +129,11 @@ export class HomeComponent implements OnInit {
       {
         next: (response) => {
           this.prolificAuthors = response;
-          console.log(this.prolificAuthors);
         },
         error: error => console.log(error)
       }
     );
-    this.mostComplecRecipesSubscription = this.recipesService.getMostComplexRecipes(5).subscribe(
+    this.mostComplexRecipesSubscription = this.recipesService.getMostComplexRecipes(5).subscribe(
       {
         next: (response) => {
           this.complexRecipes = response;
@@ -163,30 +156,47 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/recipe', recipeId]);
   }
 
-  onRecipeHover(recipe: RecipeHome){
+  onRecipeHover(recipe: HomeRecipe) {
     this.router.navigate(['/recipe', recipe.id]);
   }
 
-  onAuthorClick(event: Event, authorName: string, clickedRecipeId: string) {
+  onAuthorClickFromTable(event: Event, authorName: string, clickedRecipeId: string) {
     event.stopPropagation();
-    this.router.navigate(['/author', authorName, 'id', clickedRecipeId] );
+    this.router.navigate(['/author', authorName, 'id', clickedRecipeId]);
+  }
+
+  onAuthorClickFromStats(authorName: string){
+    this.router.navigate(['/author', authorName]);
   }
 
   onIngredientsChange(event: any) {
     const { originalEvent, value } = event
-    if (value) this.selectAll = value.length === this.ingredients.length;
+    if (value) {
+      this.selectAll = value.length === this.ingredients.length;
+      let ingredients = this.selectedIngredients.map(i => i.name);
+      this.recipeParams.selectedIngredients = ingredients.join(',');
+    }
+    else {
+      this.recipeParams.selectedIngredients = undefined;
+    }
   }
 
   onIngredientsSearch($event: ListboxFilterEvent) {
     if ($event.originalEvent.target) {
-      this.searchTerm.next(($event.originalEvent.target as HTMLInputElement).value);
+      this.ingredientSearchTerm.next(($event.originalEvent.target as HTMLInputElement).value);
     }
+  }
+
+  onRecipeSearchChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.recipeParams.recipeName = target.value;
+    this.recipeSearchTerm.next(target.value);
   }
 
   onSort(event: SortEvent) {
     console.log(event);
     if (event) {
-      const sortField = event.field; 
+      const sortField = event.field;
       const sortOrder = event.order === 1 ? 'asc' : 'desc';
       const formattedSortOrder = `${sortField}_${sortOrder}`;
       this.selectedSortOption = formattedSortOrder;
@@ -194,19 +204,21 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  clearFilters() {
+  onClearFilters() {
     this.selectedIngredients = [];
     this.selectAll = false;
     this.getRecipes();
   }
 
-  filterRecipes() {
-    this.getRecipesByIngredients();
+  onFilterRecipes() {
+    this.getRecipes();
   }
 
   ngOnDestroy(): void {
     this.recipesSubscription.unsubscribe();
     this.ingredientsSubscription.unsubscribe();
     this.mostProlificAuthorsSubscription.unsubscribe();
+    this.mostComplexRecipesSubscription.unsubscribe();
+    this.mostUsedIngredientsSubscription.unsubscribe();
   }
 }

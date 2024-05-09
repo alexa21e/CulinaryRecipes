@@ -1,8 +1,7 @@
 ﻿namespace CulinaryRecipes.DataObjects
 {
-    public class RecipeStatsToReturn
+    public class RecipeNameToReturn
     {
-        public string Id { get; set; }
         public string Name { get; set; }
     }
 }
